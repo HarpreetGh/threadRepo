@@ -4,18 +4,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import UserContext from "../../context/UserContext";
 import Axios from "axios";
 import MyDropzone from "../misc/file-upload.js";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import Container from "@material-ui/core/Container";
-import { TextareaAutosize } from "@material-ui/core";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import InputLabel from "@material-ui/core/InputLabel";
+import { 
+Button, CssBaseline, TextField,FormControl,
+Grid, Typography, Container, Select, MenuItem,
+OutlinedInput, InputAdornment, InputLabel}
+from "@material-ui/core";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -23,24 +16,26 @@ const useStyles = makeStyles((theme) => ({
     // title of product
     display: "flex",
     justifyContent: "center",
-  }
-
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 150,
+  },
 }));
 
 
 export default function Create() {
-  const [itemName, setItemName] = useState();
-  const [description, setDescription] = useState();
-  const [garmentType, setGarmentType] = useState();
-  const [size, setSize] = useState();
-  const [color, setColor] = useState();
-  const [condition, setCondition] = useState();
-  const [price, setPrice] = useState();
+  const [itemName, setItemName] = useState("");
+  const [description, setDescription] = useState("");
+  const [garmentType, setGarmentType] = useState("");
+  const [size, setSize] = useState("");
+  const [color, setColor] = useState("");
+  const [condition, setCondition] = useState("");
+  const [price, setPrice] = useState("");
   const [Images, setImages] = useState([]);
 
-  const { userData, setUserData } = useContext(UserContext);
-  const history = useHistory();
-
+  const { userData } = useContext(UserContext);
+  const classes = useStyles();
 
 
   const onSubmit = async (e) => {
@@ -68,11 +63,9 @@ export default function Create() {
       console.log(newListing);
       Axios.post("http://localhost:4000/listings/add", newListing)
         .then(response => { window.location = response.data; });
-      //axios.post('http://localhost:4000/listings/add', image)
-      //  .then(response => { window.location = response.data; })
-      //history.push("/");
-    } catch (err) {
-      // err.response.data.msg && setError(err.response.data.msg);
+    } 
+    catch (err) {
+      console.log("bad");
     }
   };
 
@@ -94,7 +87,6 @@ export default function Create() {
 }
 
   //{setImages(acceptedFiles)}
-  const classes = useStyles();
 
   //https://material-ui.com/components/text-fields/
   if (userData.user) {
@@ -102,11 +94,11 @@ export default function Create() {
       <Container component="main" maxWidth="lg">
         <CssBaseline />
         <div>
-          <Typography component="h1" variant="h5">
+          <Typography component="h1" variant="h5" className={classes.title}>
             Create New Listing
           </Typography>
           <form onSubmit={onSubmit}>
-            <MyDropzone refreshFunction={updateImages}/>
+            <MyDropzone refreshFunction={updateImages} className={classes.title}/>
             <Grid>
               <TextField
                 name="name"
@@ -120,106 +112,114 @@ export default function Create() {
                 label="Name"
               />
             </Grid>
+            <div className={classes.title}>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel>Garment Type</InputLabel>
+                <Select
+                  required
+                  labelId="garment"
+                  id="garment"
+                  value={garmentType}
+                  onChange={(e) => setGarmentType(e.target.value)}
+                  label="Garment Type"
+                >
+                  {Filters.garment.map((garments) => (
+                    <MenuItem key={garments} value={garments}>
+                      {garments}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel>Size</InputLabel>
+              <Select //Size /
+                required
+                children
+                labelId="size"
+                id="size"
+                value={size}
+                onChange={(e) => setSize(e.target.value)}
+                label="Size"
+              >
+                {garmentType == "Footwear" ? (
+                  Filters.shoeSizes.map((sizes) => (
+                    <MenuItem key={sizes} value={sizes}>
+                      {sizes}
+                    </MenuItem>
+                  ))
+                ) : (
+                    Filters.garmentSizes.map((sizes) => (
+                      <MenuItem key={sizes} value={sizes}>
+                        {sizes}
+                      </MenuItem>
+                    ))
+                  )}
+              </Select>
+              </FormControl>
+
+              <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel>Color</InputLabel>
+              <Select //Color
+                required
+                labelId="color"
+                id="color"
+                value={color}
+                onChange={(e) => setColor(e.target.value)}
+                label="Color"
+              >
+                {Filters.colors.map((colors) => (
+                  <MenuItem key={colors} value={colors}>
+                    {colors}
+                  </MenuItem>
+                ))}
+              </Select>
+              </FormControl>
+
+              <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel>Condition</InputLabel>
+              <Select //Color
+                required
+                labelId="Condition"
+                id="Condition"
+                value={condition}
+                onChange={(e) => setCondition(e.target.value)}
+                label="Condition"
+              >
+                {Filters.conditions.map((conditions) => (
+                  <MenuItem key={conditions} value={conditions}>
+                    {conditions}
+                  </MenuItem>
+                ))}
+              </Select>
+              </FormControl>
+
+              <FormControl className={classes.formControl} variant="outlined">
+                <InputLabel>Price</InputLabel>
+                <OutlinedInput
+                  required
+                  type="number"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                  label="Price"
+                />
+              </FormControl>
+            </div>
 
             <Grid>
-              <TextareaAutosize //description
-                rowsMin={3}
-                placeholder="Description"
+              <TextField
+                name="description"
                 variant="outlined"
                 type="text"
                 required
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 fullWidth
+                multiline
+                rows={4}
                 id="description"
                 label="Description"
-                name="description"
-              />
-            </Grid>
-
-            <InputLabel>Garment Type</InputLabel>
-            <Select //Size /<children  size/>
-              labelId="garment"
-              id="garment"
-              value={garmentType}
-              onChange={(e) => setGarmentType(e.target.value)}
-            >
-              {Filters.garment.map((garments) => (
-                <MenuItem key={garments} value={garments}>
-                  {garments}
-                </MenuItem>
-              ))}
-            </Select>
-
-            <InputLabel>Size</InputLabel>
-            <Select //Size /
-              children
-              labelId="size"
-              id="size"
-              value={size}
-              onChange={(e) => setSize(e.target.value)}
-            >
-              {garmentType == "Footwear" ? (
-                Filters.shoeSizes.map((sizes) => (
-                  <MenuItem key={sizes} value={sizes}>
-                    {sizes}
-                  </MenuItem>
-                ))
-              ) : (
-                  Filters.garmentSizes.map((sizes) => (
-                    <MenuItem key={sizes} value={sizes}>
-                      {sizes}
-                    </MenuItem>
-                  ))
-                )}
-            </Select>
-
-            <InputLabel>Color</InputLabel>
-            <Select //Color
-              labelId="color"
-              id="color"
-              value={color}
-              onChange={(e) => setColor(e.target.value)}
-            >
-              {Filters.colors.map((colors) => (
-                <MenuItem key={colors} value={colors}>
-                  {colors}
-                </MenuItem>
-              ))}
-            </Select>
-
-            <InputLabel>Condition</InputLabel>
-            <Select //Color
-              labelId="Condition"
-              id="Condition"
-              value={condition}
-              onChange={(e) => setCondition(e.target.value)}
-            >
-              {Filters.conditions.map((conditions) => (
-                <MenuItem key={conditions} value={conditions}>
-                  {conditions}
-                </MenuItem>
-              ))}
-            </Select>
-
-            <Grid>
-              <TextField
-                name="price"
-                variant="outlined"
-                type="number"
-                required
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                fullWidth
-                id="price"
-                label="Price"
-              />
-            </Grid>
-
-            <Grid>
-              <FormControlLabel
-                control={<Checkbox color="primary" />}
-                label="I am not a robot"
               />
             </Grid>
 
@@ -252,16 +252,3 @@ export default function Create() {
     );
   }
 }
-
-/*
-<Dropzone onDrop={acceptedFiles => console.log(acceptedFiles)} multiple>
-                {({ getRootProps, getInputProps }) => (
-                  <section>
-                    <div {...getRootProps()}>
-                      <input {...getInputProps()} />
-                      <Button variant="outlined">Upload Image</Button>
-                    </div>
-                  </section> //https://react-dropzone.js.org/ Has Material UI stuff
-                )}
-              </Dropzone>
-*/

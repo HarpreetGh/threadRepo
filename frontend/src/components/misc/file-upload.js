@@ -2,7 +2,6 @@ import React, { useCallback, useState } from "react";
 import Dropzone from "react-dropzone";
 import Button from "@material-ui/core/Button";
 import Axios from "axios";
-import Card from "@material-ui/core/Card";
 
 export default function MyDropzone(props) {
   const [Images, setImages] = useState([]);
@@ -15,10 +14,10 @@ export default function MyDropzone(props) {
      
     formData.append("file", files[0])
     console.log("before upload call ");
+    console.log(formData);
     Axios.post('http://localhost:4000/listings/upload', formData, config)
         .then(response => {
-            if (response.data.success) {
-               
+            if (response.data) {
                 setImages([...Images, response.data.image])
                 props.refreshFunction([...Images, response.data.image])
 
@@ -40,7 +39,7 @@ export default function MyDropzone(props) {
   };
 
   return (
-    <div>
+    <div className={props.className}>
       <Dropzone onDrop={onDrop} maxSize={9999999999} multiple ={false}>
         {({ getRootProps, getInputProps }) => (
          
@@ -58,8 +57,7 @@ export default function MyDropzone(props) {
       <div
         style={{
           display: "flex",
-          width: "350px",
-          height: "240px",
+          height: "100px",
           overflowX: "scroll",
         }}
       >

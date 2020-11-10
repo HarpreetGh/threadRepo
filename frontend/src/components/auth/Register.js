@@ -3,19 +3,24 @@ import { useHistory } from "react-router-dom";
 import UserContext from "../../context/UserContext";
 import Axios from "axios";
 import ErrorNotice from "../misc/ErrorNotice";
-
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import Link from "@material-ui/core/Link";
-import Grid from "@material-ui/core/Grid";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import { Visibility, VisibilityOff }
+  from "@material-ui/icons";
+import {
+  CssBaseline, TextField,
+  FormControl, FormControlLabel,
+  Checkbox, Link, Grid, Avatar, Button,
+  Typography, Container, InputLabel,
+  OutlinedInput, IconButton, InputAdornment
+} from "@material-ui/core";
+
+const useStyles = makeStyles((theme) => ({
+  title: {
+    display: "flex",
+    justifyContent: "center"
+  }
+}));
 
 export default function Register() {
   const [firstname, setfirstname] = useState();
@@ -23,7 +28,9 @@ export default function Register() {
   const [email, setemail] = useState();
   const [username, setusername] = useState();
   const [password, setpassword] = useState();
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [myhistory, setHistory] = useState();
+  const classes = useStyles();
   const [error, setError] = useState();
 
   const { setUserData } = useContext(UserContext);
@@ -32,7 +39,7 @@ export default function Register() {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      const newUser = { username, firstname, lastname, email, password };
+      const newUser = { username, firstname, lastname, email, password, myhistory };
       await Axios.post("http://localhost:4000/users/sign_up", newUser);
       const loginRes = await Axios.post("http://localhost:4000/users/login", {
         email,
@@ -52,16 +59,25 @@ export default function Register() {
     }
   };
 
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+
   return (
     <Container component="main" maxWidth="lg">
       <CssBaseline />
       <div>
-        <Avatar>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Register
-        </Typography>
+        <div className={classes.title}>
+          <Avatar>
+            <LockOutlinedIcon />
+          </Avatar>
+        </div>
+        <div className={classes.title}> 
+          <Typography component="h1" variant="h5">
+            Register
+          </Typography>
+        </div>
 
         <form onSubmit={onSubmit}>
           <Grid container spacing={2}>
@@ -122,19 +138,26 @@ export default function Register() {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField //passwrod
-                variant="outlined"
-                type="text"
-                required
-                value={password}
-                onChange={(e) => setpassword(e.target.value)}
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
+              <FormControl fullWidth variant="outlined">
+                <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
+                <OutlinedInput
+                  id="password"
+                  required
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setpassword(e.target.value)}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleShowPassword}
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  labelWidth={70}
+                />
+              </FormControl>
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel

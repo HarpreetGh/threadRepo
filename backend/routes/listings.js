@@ -14,17 +14,19 @@ router.route("/").get((req, res) => {
 
 router.route("/filter").post((req, res) => {
   const keys = Object.keys(req.body);
-  var filter = {};
   var i = 0;
   for(i = 0; i < keys.length; i++){
-    if(req.body[keys[i]].length !=0){
-      filter[keys[i]] = req.body[keys[i]];
+    if(req.body[keys[i]].length === 0){
+     delete req.body[keys[i]];
     }
   }
-  //console.log(req.body);
-  //console.log(filter); these two should match, excluding empty arrays
-
-  Listing.find(filter, function (err, listings) {
+  console.log(req.body);
+  
+  if (Object.keys(req.body).includes("_id")){
+    req.body._id = {$in: req.body._id};
+  }
+  
+  Listing.find(req.body, function (err, listings) {
     if (err) {
       console.log("bad");
       res.json(err);
@@ -49,10 +51,11 @@ router.route("/add").post((req, res) => {
   const image = req.body.images;
   //const date = req.body.date;
   //const date = Date.parse(req.body.date);
+  
 
   //console.log(username + " " + name + " " + description + " " + size + " " + color + " " + condition + " " + price + " " + likes);
 console.log(req.body);
-  const newListing = new Listing({
+  var newListing = new Listing({
     username,
     name,
     description,
@@ -67,6 +70,8 @@ console.log(req.body);
   });
 
   console.log(newListing);
+  //newListing.image = (newListing.image).map(myFunction);
+  ///fs.renameSync(, newListing.id+);
 
   newListing
     .save()
@@ -103,29 +108,51 @@ router.route("/:id").delete((req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
-router.route("/update/:id").post((req, res) => {
-  Listing.findById(req.params.id)
-    .then((listings) => {
-      listings.username = req.body.username;
-      listings.name = req.body.name;
-      listings.description = req.body.description;
-      listings.size = req.body.size;
-      listings.color = req.body.color;
-      listings.condition = req.body.condition;
-      listings.price = req.body.price;
-      listings.images = req.file.path;
 
-      listings
-        .save()
-        .then(() => res.json("Listing updated."))
-        .catch((err) => res.status(400).json("Error: " + err));
-    })
-    .catch((err) => res.status(400).json("Error: " + err));
+router.route("/filter").post((req, res) => {
+  const keys = Object.keys(req.body);
+  var filter = {};
+  var i = 0;
+  for (i = 0; i < keys.length; i++) {
+    if (req.body[keys[i]].length != 0) {
+      filter[keys[i]] = req.body[keys[i]];
+    }
+  }
+  //console.log(req.body);
+  //console.log(filter); these two should match, excluding empty arrays
+
+  Listing.find(filter, function (err, listings) {
+    if (err) {
+      console.log("bad");
+      res.json(err);
+    }
+  }).then(function (listings) {
+    //console.log("good");
+    res.json(listings);
+  });
+});
+
+router.route("/update/:id").post((req, res) => {
+  //example inputs for req.body
+  //ex1: { sold: true }
+  //ex2: { size: "XL"}
+  Listing.updateOne(
+    { _id: req.params.id },
+    { [Object.keys(req.body)[0]]: req.body[Object.keys(req.body)[0]] },
+    { new: true },
+    (err, listing) => {
+      if (err) {
+        return res.json({ success: false, err });
+      }
+      console.log(listing);
+      res.end();
+    }
+  );
 });
 
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
-      cb(null, '../uploads/')
+    cb(null, './public/listing-images')
   },
   filename: (req, file, cb) => {
       cb(null, `${Date.now()}_${file.originalname}`)
@@ -157,3 +184,8 @@ router.route("/upload").post((req, res) => {
 });
 
 module.exports = router;
+
+/*router.route("/images").post((req, res) => {
+  
+});
+*/

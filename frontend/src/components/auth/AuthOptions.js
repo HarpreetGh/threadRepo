@@ -7,7 +7,6 @@ export default function AuthOptions() {
   const { userData, setUserData } = useContext(UserContext);
 
   const history = useHistory();
-
   const register = () => history.push("/register");
   const login = () => history.push("/login");
   const logout = () => {
@@ -21,8 +20,10 @@ export default function AuthOptions() {
     localStorage.setItem("email", "");
     history.push("/");
   };
+  
   return (
     <nav className="auth-options">
+      
       {userData.user ? (
         <Button onClick={logout}>Log out</Button>
       ) : (

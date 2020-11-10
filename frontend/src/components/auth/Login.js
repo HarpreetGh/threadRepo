@@ -2,25 +2,32 @@ import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import UserContext from "../../context/UserContext";
 import Axios from "axios";
-
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import Link from "@material-ui/core/Link";
-import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "@material-ui/core/styles";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import Typography from "@material-ui/core/Typography";
-import Container from "@material-ui/core/Container";
+import {Visibility, VisibilityOff}
+from "@material-ui/icons";
+import {
+  CssBaseline, TextField, 
+  FormControl, FormControlLabel,
+  Checkbox, Link, Grid, Avatar, Button,
+  Typography, Container, InputLabel, 
+  OutlinedInput, IconButton, InputAdornment
+} from "@material-ui/core";
+
+const useStyles = makeStyles((theme) => ({
+  title: {
+    display: "flex",
+    justifyContent: "center"
+  }
+}));
 
 export default function Login() {
   const [email, setemail] = useState();
   const [password, setpassword] = useState();
-
+  const [showPassword, setShowPassword] = useState(false);
   const { setUserData } = useContext(UserContext);
   const history = useHistory();
+  const classes = useStyles();
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -30,6 +37,7 @@ export default function Login() {
         "http://localhost:4000/users/login",
         loginUser
       );
+      console.log(loginUser);
       setUserData({
         token: loginRes.data.token,
         user: loginRes.data.user,
@@ -43,16 +51,27 @@ export default function Login() {
       // err.response.data.msg && setError(err.response.data.msg);
     }
   };
+
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <Container component="main" maxWidth="lg">
       <CssBaseline />
       <div>
-        <Avatar>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Log In
-        </Typography>
+        <div className={classes.title}>
+          <Avatar>
+            <LockOutlinedIcon />
+          </Avatar>
+        </div>
+        
+        <div className={classes.title}>
+          <Typography component="h1" variant="h5">
+            Log In
+          </Typography>
+        </div>
+        
         <form onSubmit={onSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -71,19 +90,25 @@ export default function Login() {
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField //passwrod
-                variant="outlined"
-                type="text"
-                required
-                value={password}
-                onChange={(e) => setpassword(e.target.value)}
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
+              <FormControl fullWidth variant="outlined">
+              <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
+                <OutlinedInput
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setpassword(e.target.value)}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleShowPassword}
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  labelWidth={70}
+                />
+              </FormControl>
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel

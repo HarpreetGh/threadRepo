@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useContext} from "react";
+import UserContext from "../../context/UserContext";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
@@ -7,8 +8,13 @@ import { Row, Col } from "reactstrap";
 import ImageGallery from "react-image-gallery";
 import axios from 'axios';
 import { useParams } from "react-router-dom";
-import Typography from "@material-ui/core/Typography";
-import Container from "@material-ui/core/Container";
+import { Typography } from "@material-ui/core";
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
+//import { useDispatch } from 'react-redux';
+//import { param } from "../../../../backend/routes/users";
+
 const images = [
   // array holding item images
   {
@@ -62,22 +68,53 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
 export default function Listing(){
 const [listing, setListing] = useState({});
-
-  let { id } = useParams(); //url 
-  useEffect(() => {
-    axios.get('http://localhost:4000/listings/' + id)
-      .then(response => {
-        setListing(response.data)
-      })
-    console.log(listing)
-  }, [])
+const [isLoaded1, setIsLoaded1] = useState();
+const [onWish, setOnWish] = useState(false);
+const [wishlist, setWishlist] = useState([""]);
+const { userData, setUserData } = useContext(UserContext);
+let { id } = useParams(); //url 
   
+ useEffect(() => {
+  axios.get('http://localhost:4000/listings/' + id)
+      .then(response => {
+        console.log(response.data);
+        setListing(response.data)
+        setIsLoaded1(true);
+      })
+  
+    //always gets wishlist whether signed in or not  
+    axios.get('http://localhost:4000/users/wishlist/' + localStorage.getItem("id"))
+      .then(response => {
+        setOnWish(response.data.includes(id));
+        setWishlist(response.data);
+      })
+  }, [])
+
+  const onSubmit = () => {
+    console.log("onSubmit: ", onWish);
+    console.log("Before: ", wishlist);
+    if(onWish){
+      wishlist.splice(wishlist.indexOf(id), 1);
+    }
+    else{
+      wishlist.push(id);
+    }
+    console.log("After: ",wishlist);
+    axios.post('http://localhost:4000/users/update/' + localStorage.getItem("id"), {wishlist: wishlist})
+      .then(response => {
+        console.log(response.data);
+      })
+    setOnWish(!onWish);
+  }
 
     const classes = useStyles();
-
-  
+    if(!isLoaded1){
+      return <div>Loading...</div>;
+    }
+    else{
     return (
       <React.Fragment>
         <CssBaseline />
@@ -111,27 +148,42 @@ const [listing, setListing] = useState({});
                   <Col>{"Price: $" + listing.price}</Col>
                   <br />
                   <Col>
-                    <form>
-                      <label>
-                        Shoe Size: 
-                        <select>
-                          <option>{listing.size}</option>
-                        </select>
-                      </label>
-                    </form>
+                      {"Shoe Size: " + listing.size}
                     <br />
                   </Col>
                   <Col>
-                    <form>
-                      <label>{"Shoe Condition: "}</label>
-                      <select>
-                        <option>{listing.condition}</option>
-                      </select>
-                    </form>
+                    {"Shoe Condition: " + listing.condition}
                   </Col>
                 </Row>
-                <Row>
-                  <Button>BuyNow</Button>
+                <Row>   
+                  {userData.user ? (
+                    listing.sold? (
+                      <Typography> Sold </Typography>
+                    ) : (
+                        <Button href={"/Checkout/" + id}
+                        variant="contained"
+                        color="primary" 
+                        startIcon={<ShoppingBasketIcon />}> 
+                        Buy Now </Button>
+                      )
+                  ) : (
+                    <Button href={"/login"}
+                        variant="contained"
+                        color="primary">  
+                        Login to Purchase </Button>
+                  )}
+                  {userData.user ? (   
+                    onWish? (
+                      <Button onClick={onSubmit} color="secondary" variant="outlined" startIcon={<FavoriteIcon />}> 
+                      unFavorite </Button>
+                      ):( listing.sold?(""):(
+                        <Button onClick={onSubmit} color="secondary" variant="contained" startIcon={<FavoriteBorderIcon />}>
+                          Favorite </Button>)
+                      )
+                  ):("")
+                  }
+                 
+                  
                 </Row>
               </div>
             </Col>
@@ -139,5 +191,6 @@ const [listing, setListing] = useState({});
         </Grid>
       </React.Fragment>
     );
-
 }
+}
+

@@ -153,7 +153,7 @@ export default function Album() {
                 </Col>
               </Row>
               <Row>
-                <Button>BuyNow</Button>
+                <Button>BUY now</Button>
               </Row>
             </div>
           </Col>

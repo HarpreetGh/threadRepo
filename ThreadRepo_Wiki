@@ -147,28 +147,35 @@ in order transfer the messsage between users.
 Home page, login page, listing page, checkout page, user profile page, etc.
 
 ID: UIR1
-Home/splash page (All listings)
-* Description: Given the user has accessed the website, the home page is display which contains all listings.
+Home/splash page (All available listings)
+* Description: Given the user has accessed the website, the home page is display which contains all available listings.
 * Rationale: In order for the user to view the website
 * Dependency: N/A
 
   ID: UIR2
   Specific listing page
-  * Description: Given the user is on the home page, they can view a specific listing where they can later checkout.
+  * Description: Given the user is on the home page, they can view a specific listing where they can later checkout. This applies to sold listings too via the sold listings page.
   * Rationale: In order for the user to view a specific listing.
-  * Dependency: UIR1
+  * Dependency: UIR1, UIR12
 
     ID: UIR3
     Checkout page
-    * Description: If the user is logged in and on a specific listing, they can be taken to a page where they can checkout with PayPal API.
+    * Description: If the user is logged in and on an available specific listing, they can be taken to a page where they can checkout with PayPal API via a button. The PayPal button opens a new window requiring PayPal login then checking out with user-specified information.
+
     * Rationale: For the user to able to checkout a listing.
     * Dependency: UIR2
   
   ID: UIR4
   Filter listings
-  * Description: If the user is on the home page, they can filter listings with drop down menus of categories of garment type, size, condition, and color.
+  * Description: If the user is on the home page, they can filter listings with drop down menus of categories of garment type, size, condition, and color. This applies to the sold listings page too.
   * Rationale: For the user to be able to use the website
-  * Dependency: UIR1
+  * Dependency: UIR1, UIR12
+
+  ID: UIR10
+  Wishlist a listing
+  * Description: If the user is viewing an available specific listing, they can press a button which adds the item to their wishlist page.
+  * Rationale: For the user to be able to add listings to their wishlist. 
+  * Dependency: UIR2
 
   ID: UIR5
   Register page
@@ -200,6 +207,20 @@ Home/splash page (All listings)
     * Rationale: For the user to able to view their order history.
     * Dependency: UIR8
 
+  ID: UIR11
+  Wishlist page
+  * Description: Given the user is on the website, a user can view their wishlist which contains all the listings they have wishlisted. If the user has not wishlisted any listings, a message will be displayed stating the user has no items in their wishlist.
+  * Rationale: For the user to view their wishlisted items. 
+  * Dependency: UIR1
+
+  ID: UIR12
+  Sold listings page
+  * Description: Given the user is on the website, a user can view a page of all the sold listings.
+  * Rationale: To able to see past listings which have been sold.
+  * Dependency: UIR1
+
+
+
 
 
 
@@ -212,22 +233,34 @@ Access website
 * Dependency: N/A
 
   ID: FR2
-  View all listings
+  View all available listings
   * Description: The home page or landing page of the website displays all available listings from the database.
   * Rationale: For the user to view all listings.
   * Dependency: FR1
 
+  ID: FR13
+  View all sold listings
+  * Description: If the user is on the website, they can view a page of all the listings that have been purchased or sold on the website.
+  * Rationale: To able to see past listings which have been sold.
+  * Dependency: FR1
+
     ID: FR3
     Filter listings
-    * Description: If the user is viewing all litsings, they can filter listings by a combination of category garment type, size, condition, and color. 
-    * Rationale: For the user to be able to filter all listings.
-    * Dependency: FR2
+    * Description: If the user is viewing all listings, they can filter listings by a combination of category garment type, size, condition, and color. This applies to sold listings page too.
+    * Rationale: For the user to be able to filter all available listings.
+    * Dependency: FR2, FR13
 
     ID: FR4
     View specific listing
-    * Description: If the user is viewing all listings, they can view the page of the specific listing.
+    * Description: If the user is viewing all listings, they can view the page of the specific listing. This applies to the sold listings page too.
     * Rationale: For the user to able to view a specific listing.
-    * Dependency: FR2
+    * Dependency: FR2, FR13
+
+      ID: FR11
+      Wishlist specific listing
+      * Description: If the user is a viewing an available specific listing and is logged in, they can press a button on the the page of the specific listing to add it to their wishlist page.
+      * Rationale: For the user to be able to add listings to their wishlist.
+      * Dependency: FR4, FR6
   
   ID: FR5
   User register
@@ -249,7 +282,7 @@ Access website
 
       ID: FR8
       Checkout listing
-      * Description: Given a user is logged in and is on the specific listing page, they are able to checkout via PayPal API.
+      * Description: Given a user is logged in and is on an available specific listing page, they are able to checkout via PayPal API.
       * Rationale: For the user to purchase created listings from other users.
       * Dependency: FR4, FR6
 
@@ -265,6 +298,11 @@ Access website
         * Rationale: For the user to see their order history. 
         * Dependency: FR9
 
+      ID: FR12
+      View wishlist
+      * Description: If the user is logged in, they can view the listings they have wishlisted on the wishlist page. The wishlist page does not need listing(s) to be wishlisted in order to view the wishlist page.
+      * Rationale: For the user to see their wishlist.
+      * Dependency: FR6, FR11
 
 
 

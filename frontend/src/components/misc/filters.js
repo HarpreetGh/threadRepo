@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 //import {Filter} from "../misc/filters"; use this to export
 
 const Filters = {
+    sold: {id: "sold", name:"Sold", list: [true, false]},
     category: { id: "category", name: "Category", list: ["Upper Thread", "Lower Thread", "Footwear"] },
     size: [{ id: "size", name: "Garment Size", list: ["XS", "S", "M", "L", "XL", "XXL"] },
     { id: "size", name: "Foot Size", list: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16] }],
