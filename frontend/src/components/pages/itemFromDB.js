@@ -121,11 +121,13 @@ let { id } = useParams(); //url
         <div className={classes.title}>
           <h1>{listing.name}</h1>
         </div>
+        <div><img src={listing.image} /></div>
+        
         <Grid>
           <Row className={classes.rLayout}>
             <Col className={classes.c1Layout}>
               {/* column for item images */}
-              <ImageGallery showPlayButton={false} items={images} />
+              <img showPlayButton={false} items={images} />
             </Col>
             <Col className={classes.c2Layout}>
               {/* column for item details */}
