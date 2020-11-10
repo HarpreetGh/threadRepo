@@ -1,8 +1,7 @@
 import React, {useEffect, useState, useContext} from "react";
 import UserContext from "../../context/UserContext";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Grid from "@material-ui/core/Grid";
+import { Button, CssBaseline, Grid, 
+  Card, CardMedia } from "@material-ui/core"; 
 import { makeStyles } from "@material-ui/core/styles";
 import { Row, Col } from "reactstrap";
 import ImageGallery from "react-image-gallery";
@@ -12,30 +11,6 @@ import { Typography } from "@material-ui/core";
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
-//import { useDispatch } from 'react-redux';
-//import { param } from "../../../../backend/routes/users";
-
-const images = [
-  // array holding item images
-  {
-    original:
-      "https://images.complex.com/complex/image/upload/c_fill,dpr_auto,f_auto,fl_lossy,g_face,q_auto,w_1280/iot1dbjmzr7z6kfkoxrb.png",
-    thumbnail:
-      "https://images.complex.com/complex/image/upload/c_fill,dpr_auto,f_auto,fl_lossy,g_face,q_auto,w_1280/iot1dbjmzr7z6kfkoxrb.png",
-  },
-  {
-    original:
-      "https://cache.mrporter.com/variants/images/666467151993137/fr/w2000_q80.jpg",
-    thumbnail:
-      "https://cache.mrporter.com/variants/images/666467151993137/fr/w2000_q80.jpg",
-  },
-  {
-    original:
-      "https://www.snipesusa.com/media/catalog/product/cache/1/thumbnail/2000x/040ec09b1e35df139433887a97daa66f/n/i/nike_315115-112_03.jpg",
-    thumbnail:
-      "https://www.snipesusa.com/media/catalog/product/cache/1/thumbnail/2000x/040ec09b1e35df139433887a97daa66f/n/i/nike_315115-112_03.jpg",
-  },
-];
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -74,6 +49,7 @@ const [listing, setListing] = useState({});
 const [isLoaded1, setIsLoaded1] = useState();
 const [onWish, setOnWish] = useState(false);
 const [wishlist, setWishlist] = useState([""]);
+const [images, setImages] = useState([]);
 const { userData, setUserData } = useContext(UserContext);
 let { id } = useParams(); //url 
   
@@ -121,13 +97,15 @@ let { id } = useParams(); //url
         <div className={classes.title}>
           <h1>{listing.name}</h1>
         </div>
-        <div><img src={listing.image} /></div>
+        {/*<div><img src={listing.image} /></div>*/}
         
         <Grid>
           <Row className={classes.rLayout}>
             <Col className={classes.c1Layout}>
-              {/* column for item images */}
-              <img showPlayButton={false} items={images} />
+              <ImageGallery
+              showPlayButton={false} 
+              items={[{ original: listing.image, thumbnail: listing.image }]} />
+              
             </Col>
             <Col className={classes.c2Layout}>
               {/* column for item details */}
