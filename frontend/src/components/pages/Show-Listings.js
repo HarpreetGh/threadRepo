@@ -131,7 +131,11 @@ export default function Album(props) {
                   <Typography gutterBottom variant="h5" component="h2">
                     {item.name}
                   </Typography>
-                  <Typography>{item.description}</Typography>
+                  <Typography>{item.description.length > 99?(
+                    item.description.slice(0,100) + "..."
+                    ):(
+                      item.description
+                    )}</Typography>
 
                 </CardContent>
                 <CardActions>

@@ -17,7 +17,7 @@ const listingSchema = new Schema({
         type: String,
         required: true,
         trim: true,
-        maxlength: 200
+        maxlength: 400
     },
     category: {  // The price of the listing
         type: String,
