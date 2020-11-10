@@ -56,10 +56,10 @@ const listingSchema = new Schema({
         required: true,
         default: false
     },
-    image : [{  // The price of the listing
+    image : {  //url of image
         type: String,
         required: true,
-    }],
+    },
 
 },  {
     timestamps: true,

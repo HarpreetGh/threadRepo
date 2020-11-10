@@ -48,7 +48,7 @@ router.route("/add").post((req, res) => {
   const price = Number(req.body.price);
   const likes = Number(req.body.likes);
   const sold = false;
-  const image = req.body.images;
+  const image = req.body.image;
   //const date = req.body.date;
   //const date = Date.parse(req.body.date);
   
