@@ -53,19 +53,26 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const sortOptions = [
+  "Date: New", "Date: Old",
+  "Price: High to Low", "Price: Low to High",
+]
+
 export default function Album(props) {
   const classes = useStyles();
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [reLoad, setReLoad] = useState(false);
   const [listings, setListings] = useState([]);
   const [showFilters, setShowFilters] = useState(props.showFilters);
   const [filter, setFilter] = useState(props.inputFilter)
+  const [sort, setSort] = useState(sortOptions[0]);
 
   useEffect(() => {
     Axios.post("http://localhost:4000/listings/filter", filter)
       .then(response => {
         setIsLoaded(true);
-        setListings(response.data);
+        setListings(response.data.reverse());
       });
   }, [])
 
@@ -73,7 +80,6 @@ export default function Album(props) {
     var newFilter = filter;
     newFilter[id] = value;
     setFilter(newFilter);
-    //console.log(filter);
     Axios.post("http://localhost:4000/listings/filter", filter)
       .then(response => {
         setListings([]);
@@ -154,6 +160,81 @@ export default function Album(props) {
     )
   };
 
+  const handleChange = (value) => {
+    var ascending = 0;
+    var i = 0;
+    for (i = 0; i < sortOptions.length; i++) {
+      if (sortOptions[i] === value) {
+        ascending = i % 2;
+        break;
+      }
+    }
+    
+    var sortListings = listings;
+    if (value.slice(0, value.indexOf(":")) === "Price") {
+      if (ascending) {
+        sortListings.sort(function (a, b) { return a.price - b.price });
+      }
+      else {
+        sortListings.sort(function (a, b) { return b.price - a.price });
+      }
+    }
+    else{
+      sortListings.sort(function (a, b) {
+        var date1 = Number(a.createdAt.slice(0, 10).replace(/-/g, ""));
+        var date2 = Number(b.createdAt.slice(0, 10).replace(/-/g, ""));
+        var date3 = date1 - date2;
+
+        var time1 = Number("0." + a.createdAt.slice(11, 19).replace(/:/g, "") + a.createdAt.slice(20, 23));
+        var time2 = Number("0." + b.createdAt.slice(11, 19).replace(/:/g, "") + b.createdAt.slice(20, 23));
+        var time3 = time1 - time2;
+        
+      return date3 + time3});
+
+      if(!ascending){ sortListings.reverse()}
+    }
+
+    setSort(value);
+    setListings(sortListings);
+    setReLoad(!reLoad);
+  }
+
+  const sortList = () => (
+    <FormControl className={classes.formControl}>
+      <InputLabel>Sort by:</InputLabel>
+      <Select
+        value={sort.id}
+        onChange={(e) => handleChange(e.target.value)}
+        input={<Input />}
+      >
+        {sortOptions.map((currentOptions) => (
+          <MenuItem key={currentOptions} value={currentOptions}>
+            {currentOptions}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  );
+
+/*
+  const filterSlide = (currentFilter) => (
+    <FormControl className={classes.formControl}>
+      <Typography gutterBottom>
+        Price
+      </Typography>
+      <Slider
+        min={0}
+        step={10}
+        max={1000}
+        value={filter[currentFilter.id]}
+        onChange={handleChange}
+        valueLabelDisplay="auto"
+        aria-labelledby="range-slider"
+        getAriaValueText={valuetext}
+      />
+    </FormControl>
+  );
+*/
 
   if (error) {
     return <div>Error: {error.message}</div>;
@@ -187,7 +268,9 @@ export default function Album(props) {
             </div>
             ):("")
           }
-          {displayListings()}
+          <div>{sortList()}</div>
+          {reLoad ? (displayListings()) : (displayListings())}
+          
         </main>
         <Fab href="/listings/create" color="primary" aria-label="add">
           <AddIcon />
