@@ -8,7 +8,6 @@ import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import Checkout from "./components/pages/Checkout";
 
-
 import Listing from "./components/pages/itemFromDB.js";
 import WishList from "./components/pages/Wishlist";
 import Sold from "./components/pages/Sold";
@@ -18,6 +17,8 @@ import Header from "./components/layout/header.js";
 
 import UserContext from "./context/UserContext.js";
 import Copyright from "./components/layout/Copyright.js";
+import ProfilePage from "./components/pages/profile-page.js";
+import EditPage from "./components/pages/edit-page.js";
 
 
 export const sections  = [
@@ -26,7 +27,7 @@ export const sections  = [
   { title: "Sold", url: "/sold" },
   { title: "New Listing", url: "/listings/create" },
   { title: "All Listings", url: "/listings" },
-  { title: " ", url: "#" },
+  { title: "Profile", url: "/profile-page" },
 ];
 
 export default function App() {
@@ -80,6 +81,8 @@ export default function App() {
               <Route path="/Checkout/:id" exact component={Checkout} />
               <Route path="/login" exact component={Login} />
               <Route path="/register" exact component={Register} />
+              <Route path="/profile-page" exact component={ProfilePage} />
+              <Route path="/edit-page/:id" exact component={EditPage} />
             </Switch>
           </div>
           <Copyright />

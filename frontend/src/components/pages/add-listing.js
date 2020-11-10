@@ -56,8 +56,8 @@ export default function Create() {
     .catch(err=>{
       console.log(err)
     })
-
   }
+
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -99,7 +99,6 @@ export default function Create() {
       "Gray", "Beige", "Camoflauge", "Tie-Dye"
     ]
   }
-
 
   //https://material-ui.com/components/text-fields/
   if (userData.user) {

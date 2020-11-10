@@ -126,35 +126,34 @@ let { id } = useParams(); //url
         <Grid>
           <Row className={classes.rLayout}>
             <Col className={classes.c1Layout}>
-              {/* column for item images */}
               <img showPlayButton={false} items={images} />
             </Col>
             <Col className={classes.c2Layout}>
-              {/* column for item details */}
               <div style={{ padding: 5 }}>
-                {/* rating section */}
-                Rating: COMING SOON
+                Rating: {listing.likes} Likes
               </div>
-              <hr />
+              <div>
+                Sold By: {listing.username}
+              </div><hr />
               <div style={{ padding: 10 }}>
-                {/* description section */}
-                LEGENDARY STYLE
-                <br />
-                {listing.description}
-                <br />
+                Description<br />
+                {listing.description}<br />
               </div>
               <hr />
               <div>
                 {/* price section */}
                 <Row style={{ padding: 10 }}>
-                  <Col>{"Price: $" + listing.price}</Col>
-                  <br />
                   <Col>
-                      {"Shoe Size: " + listing.size}
-                    <br />
+                    {"Price: $" + listing.price}
                   </Col>
                   <Col>
-                    {"Shoe Condition: " + listing.condition}
+                    {"Color: " + listing.color}
+                  </Col>
+                  <Col>
+                    {"Size: " + listing.size}
+                  </Col>
+                  <Col>
+                    {"Condition: " + listing.condition}
                   </Col>
                 </Row>
                 <Row>   
