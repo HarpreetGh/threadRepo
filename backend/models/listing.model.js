@@ -17,7 +17,7 @@ const listingSchema = new Schema({
         type: String,
         required: true,
         trim: true,
-        maxlength: 200
+        maxlength: 400
     },
     category: {  // The price of the listing
         type: String,
@@ -56,10 +56,10 @@ const listingSchema = new Schema({
         required: true,
         default: false
     },
-    image : [{  // The price of the listing
+    image : {  //url of image
         type: String,
         required: true,
-    }],
+    },
 
 },  {
     timestamps: true,

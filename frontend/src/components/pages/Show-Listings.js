@@ -130,14 +130,18 @@ export default function Album(props) {
               <Card className={classes.card}>
                 <CardMedia
                   className={classes.cardMedia}
-                  image="https://source.unsplash.com/random"
+                  image = {item.image}
                   title="Image title"
                 />
                 <CardContent className={classes.cardContent}>
                   <Typography gutterBottom variant="h5" component="h2">
                     {item.name}
                   </Typography>
-                  <Typography>{item.description}</Typography>
+                  <Typography>{item.description.length > 99?(
+                    item.description.slice(0,100) + "..."
+                    ):(
+                      item.description
+                    )}</Typography>
 
                 </CardContent>
                 <CardActions>

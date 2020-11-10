@@ -32,12 +32,32 @@ export default function Create() {
   const [color, setColor] = useState("");
   const [condition, setCondition] = useState("");
   const [price, setPrice] = useState("");
-  const [Images, setImages] = useState([]);
+  const [image, setImage] = useState("");
+  const [url,setUrl] = useState("");
 
   const { userData } = useContext(UserContext);
   const classes = useStyles();
 
 
+  const postDetails =()=>{
+    const data = new FormData()
+    data.append("file",image)
+    data.append("upload_preset","threadRepo")
+    data.append("cloud_name","hardhats")
+    fetch("https://api.cloudinary.com/v1_1/hardhats/image/upload",{
+      method:"post",
+      body:data
+    })
+    .then(res=>res.json())
+    .then(data=>{
+      console.log(data)
+      setUrl(data.url)
+    })
+    .catch(err=>{
+      console.log(err)
+    })
+
+  }
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -51,11 +71,11 @@ export default function Create() {
         condition: condition,
         price: price,
         likes: 0,
-        images: Images,
+        image: url,
       };
-      
+
       if( !itemName || !description ||!garmentType || !size||
-        !color || !condition || !price || !Images)
+        !color || !condition || !price || !image)
         {
           return alert('fill all the fields first!')
         }
@@ -81,13 +101,6 @@ export default function Create() {
   }
 
 
-  const updateImages = (newImages) => {
-    console.log(newImages) //test
-    setImages(newImages)
-}
-
-  //{setImages(acceptedFiles)}
-
   //https://material-ui.com/components/text-fields/
   if (userData.user) {
     return (
@@ -98,7 +111,8 @@ export default function Create() {
             Create New Listing
           </Typography>
           <form onSubmit={onSubmit}>
-            <MyDropzone refreshFunction={updateImages} className={classes.title}/>
+            <input type="file" onChange={(e)=>setImage(e.target.files[0])} 
+            />
             <Grid>
               <TextField
                 name="name"
@@ -230,6 +244,7 @@ export default function Create() {
               variant="contained"
               color="primary"
               value="Create"
+              onClick={()=>postDetails()}
             >
               Create
             </Button>
