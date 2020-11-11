@@ -178,9 +178,9 @@ export default function Register() {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="/login" variant="body2">
-                Already have an account? Sign in
-              </Link>
+            <Button href={"/register"} size="large" color="secondary" variant="contained" fullWidth="true">
+                Already have an account? Sign in here
+              </Button>
             </Grid>
           </Grid>
         </form>

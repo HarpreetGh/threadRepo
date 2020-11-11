@@ -24,7 +24,7 @@ import EditPage from "./components/pages/edit-page.js";
 export const sections  = [
   { title: "Home", url: "/" },
   { title: "Wishlist", url: "/wishlist" },
-  { title: "Sold", url: "/sold" },
+  { title: "Sold Listings", url: "/sold" },
   { title: "Create Listing", url: "/listings/create" },
   { title: "All Listings", url: "/listings" },
   { title: "Profile", url: "/profile-page" },

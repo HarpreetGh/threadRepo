@@ -115,7 +115,7 @@ let { id } = useParams(); //url
                 Sold By: {listing.username}
               </div><hr />
               <div style={{ padding: 10 }}>
-                Description<br />
+                Description:<br />
                 {listing.description}<br />
               </div>
               <hr />
