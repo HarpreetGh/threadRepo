@@ -177,11 +177,19 @@ router.route('/update/:id').post((req, res) => {
         //or use this
         //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
         //input format 
-        // ex1: {username: "whateverNewName"}
-        // ex2: {wishlists: ["", "1010101101", "12321"]}
+        // ex1: {username: "whateverNewName", wishlists: ["", "1010101101", "12321"]}
+        
+        /*
+        var updates = {};
+        Object.keys(req.body).map((update) => (
+            updates[update]= req.body[update])
+        )
+        */
+       
         User.updateOne(
             { _id: req.params.id },
-            { [Object.keys(req.body)[0]]: req.body[Object.keys(req.body)[0]]},
+            //updates,
+            req.body,
             { new: true },
             (err, user) => {
                 if (err) {
