@@ -1,7 +1,8 @@
 import React, {useEffect, useState, useContext} from "react";
 import UserContext from "../../context/UserContext";
-import { Button, CssBaseline, Grid, 
-  Card, CardMedia } from "@material-ui/core"; 
+import { Button, CssBaseline, Grid, FilledInput, InputLabel,
+         FormControl, Card, CardMedia, Paper, List, ListItem,
+         ListItemAvatar, ListItemText, Avatar  } from "@material-ui/core"; 
 import { makeStyles } from "@material-ui/core/styles";
 import { Row, Col } from "reactstrap";
 import ImageGallery from "react-image-gallery";
@@ -11,6 +12,9 @@ import { Typography } from "@material-ui/core";
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
+import CommentIcon from '@material-ui/icons/Comment';
+
+import Axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -29,6 +33,10 @@ const useStyles = makeStyles((theme) => ({
     width: "40%",
     height: 550,
   },
+  input: {
+    marginLeft: theme.spacing(1),
+    flex: 1,
+  },
   c2Layout: {
     // custom portion for details
     lg: 12,
@@ -41,10 +49,35 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(6),
   },
+  button: {
+    minWidth: 100
+  },
+  commentBox: {
+    minWidth: 500
+  },
+   text: {
+    padding: theme.spacing(1, 2, 0)
+  },
+  paper: {
+    paddingBottom: 5,
+    
+  },
+  list: {
+    marginBottom: theme.spacing(2),
+    spacing: 50
+  },
+  comRoot: {
+    width: '100%',
+    maxWidth: 500,
+    position: 'relative',
+    overflow: 'auto',
+    maxHeight: 300,
+  },
 }));
 
 //userData.user.displayName
 export default function Listing(){
+const [comment, setComment] = useState();
 const [listing, setListing] = useState({});
 const [isLoaded1, setIsLoaded1] = useState();
 const [onWish, setOnWish] = useState(false);
@@ -93,6 +126,71 @@ let { id } = useParams(); //url
       })
     setOnWish(!onWish);
   }
+
+
+
+
+  const makeComment = () => {
+    let commentItems = { comment: comment, listingId : id, userName:localStorage.getItem("username")  }
+    console.log(commentItems);
+    Axios.post('http://localhost:4000/listings/comment/', commentItems)
+
+    
+    
+
+  } 
+
+
+
+
+
+  const renderComment = (signedIn) => {
+    return(
+      <div>
+          <FormControl className= {classes.commentBox} variant="filled">
+            <InputLabel >Add comment</InputLabel>
+            <FilledInput multiline
+             rowsMax={2}
+            //value={comment}
+            onChange={(e) => {setComment(e.target.value)}}
+           />
+                <React.Fragment>
+                <CssBaseline />
+                <Paper elevation= {5} square className={classes.paper}>
+                  <Typography className={classes.text} variant="h5" gutterBottom>
+                    COMMENTS
+                  </Typography>
+                  <List className={classes.comRoot}>
+                    {listing.comments.map(({ postedBy, text, person }) => (
+                        
+                        <ListItem >
+                          <ListItemAvatar>
+                            {/*<Avatar alt="Profile Picture" src={person} />*/}
+                          </ListItemAvatar>
+                          <ListItemText primary={postedBy} secondary={text} />
+                        </ListItem>
+                    ))}
+                  </List>
+                </Paper>
+              </React.Fragment>
+              
+        </FormControl>
+        {signedIn?(
+        <Button className={classes.button}
+        
+        onClick={makeComment}
+         
+        variant="contained" color="default" startIcon={<CommentIcon />}>COMMENT</Button>
+        ):(
+          <Button className={classes.button} href={"/login"}  variant="outlined" color="default">LOGIN TO COMMENT</Button>
+        )}
+      </div>
+    )}
+
+
+
+
+
 
   const Buttons = (signedIn) => {
     if (listing.sold) { return(
@@ -151,6 +249,12 @@ let { id } = useParams(); //url
       )}
   }
 
+
+
+
+
+
+
     const classes = useStyles();
     if(!isLoaded1){
       return <div>Loading...</div>;
@@ -205,6 +309,10 @@ let { id } = useParams(); //url
                  {userData.user? Buttons(true):(Buttons(false))}
                 </Row>
               </div>
+              <hr />
+              <div>
+              {userData.user? renderComment(true):(renderComment(false))}
+             </div>
             </Col>
           </Row>
         </Grid>

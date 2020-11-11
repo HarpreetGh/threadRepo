@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const {ObjectId} = mongoose.Schema.Types
 
 const Schema = mongoose.Schema;
 
@@ -60,6 +61,10 @@ const listingSchema = new Schema({
         type: String,
         required: true,
     },
+    comments: [{
+        text: String,
+        postedBy: String
+    }]
 
 },  {
     timestamps: true,
