@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
+//userData.user.displayName
 export default function Listing(){
 const [listing, setListing] = useState({});
 const [isLoaded1, setIsLoaded1] = useState();
@@ -59,6 +59,7 @@ let { id } = useParams(); //url
         console.log(response.data);
         setListing(response.data)
         setIsLoaded1(true);
+        console.log(localStorage.getItem("username"), response.data.username)
       })
   
     //always gets wishlist whether signed in or not  
@@ -67,6 +68,13 @@ let { id } = useParams(); //url
         setOnWish(response.data.includes(id));
         setWishlist(response.data);
       })
+   //console.log(localStorage.getItem("username"), listing.username)
+   if (localStorage.getItem("id") === listing.username){
+     console.log("true");
+   }
+   else{
+     console.log("false")
+   }
   }, [])
 
   const onSubmit = () => {
@@ -84,6 +92,63 @@ let { id } = useParams(); //url
         console.log(response.data);
       })
     setOnWish(!onWish);
+  }
+
+  const Buttons = (signedIn) => {
+    if (listing.sold) { return(
+      <div style={{ padding: 10 }}>
+        <Typography> Sold </Typography>
+        {" "}
+        {onWish? ( 
+          <Button onClick={onSubmit} color="secondary" variant="outlined" startIcon={<FavoriteIcon />}>
+              unFavorite </Button>):("")}
+      </div>
+    )}
+
+    else if (signedIn) {
+      if (localStorage.getItem("username") === listing.username) { return(
+          <div style={{ padding: 10 }}>
+            <Button href={"/edit-page/" + id} size="medium" color="primary" variant="outlined">
+              Edit
+            </Button>
+            {" "}
+            {onWish ? (
+              <Button onClick={onSubmit} color="secondary" variant="outlined" startIcon={<FavoriteIcon />}>
+                unFavorite </Button>
+            ):(
+              <Button onClick={onSubmit} color="secondary" variant="contained" startIcon={<FavoriteBorderIcon />}>
+                Favorite </Button>
+            )}
+          </div>
+      )}
+
+      else { return (
+          <div style={{ padding: 10 }}>
+            <Button href={"/Checkout/" + id}
+              variant="contained"
+              color="primary"
+              startIcon={<ShoppingBasketIcon />}>
+              Buy Now </Button>
+              {" "}
+              {onWish?(
+                <Button onClick={onSubmit} color="secondary" variant="outlined" startIcon={<FavoriteIcon />}>
+                  unFavorite </Button>
+              ):(
+                <Button onClick={onSubmit} color="secondary" variant="contained" startIcon={<FavoriteBorderIcon />}>
+                  Favorite </Button>
+              )}
+          </div>
+        )}
+    }
+
+    else { return(
+        <div style={{ padding: 10 }}>
+          <Button href={"/login"}
+            variant="contained"
+            color="primary">
+            Login to Purchase </Button>
+        </div>
+      )}
   }
 
     const classes = useStyles();
@@ -111,9 +176,10 @@ let { id } = useParams(); //url
               <div style={{ padding: 5 }}>
                 Rating: {listing.likes} Likes
               </div>
-              <div>
+              <div style={{ padding: 5 }}>
                 Sold By: {listing.username}
-              </div><hr />
+              </div>
+              <hr />
               <div style={{ padding: 10 }}>
                 Description:<br />
                 {listing.description}<br />
@@ -136,34 +202,7 @@ let { id } = useParams(); //url
                   </Col>
                 </Row>
                 <Row>   
-                  {userData.user ? (
-                    listing.sold? (
-                      <Typography> Sold </Typography>
-                    ) : (
-                        <Button href={"/Checkout/" + id}
-                        variant="contained"
-                        color="primary" 
-                        startIcon={<ShoppingBasketIcon />}> 
-                        Buy Now </Button>
-                      )
-                  ) : (
-                    <Button href={"/login"}
-                        variant="contained"
-                        color="primary">  
-                        Login to Purchase </Button>
-                  )}
-                  {userData.user ? (   
-                    onWish? (
-                      <Button onClick={onSubmit} color="secondary" variant="outlined" startIcon={<FavoriteIcon />}> 
-                      unFavorite </Button>
-                      ):( listing.sold?(""):(
-                        <Button onClick={onSubmit} color="secondary" variant="contained" startIcon={<FavoriteBorderIcon />}>
-                          Favorite </Button>)
-                      )
-                  ):("")
-                  }
-                 
-                  
+                 {userData.user? Buttons(true):(Buttons(false))}
                 </Row>
               </div>
             </Col>
