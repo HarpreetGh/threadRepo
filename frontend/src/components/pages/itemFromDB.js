@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useContext} from "react";
 import UserContext from "../../context/UserContext";
 import { Button, CssBaseline, Grid, FilledInput, InputLabel,
-         FormControl, Card, CardMedia, Paper, List, ListItem,
+         FormControl, Card, CardMedia, Paper, ListItem,
          ListItemAvatar, ListItemText, Avatar  } from "@material-ui/core"; 
 import { makeStyles } from "@material-ui/core/styles";
 import { Row, Col } from "reactstrap";
@@ -59,20 +59,10 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1, 2, 0)
   },
   paper: {
-    paddingBottom: 5,
+    paddingBottom: 50,
     
   },
-  list: {
-    marginBottom: theme.spacing(2),
-    spacing: 50
-  },
-  comRoot: {
-    width: '100%',
-    maxWidth: 500,
-    position: 'relative',
-    overflow: 'auto',
-    maxHeight: 300,
-  },
+
 }));
 
 //userData.user.displayName
@@ -146,7 +136,12 @@ let { id } = useParams(); //url
 
   const renderComment = (signedIn) => {
     return(
+     
       <div>
+         <br></br>
+         <br></br>
+         <br></br>
+         <br></br>
           <FormControl className= {classes.commentBox} variant="filled">
             <InputLabel >Add comment</InputLabel>
             <FilledInput multiline
@@ -154,26 +149,25 @@ let { id } = useParams(); //url
             //value={comment}
             onChange={(e) => {setComment(e.target.value)}}
            />
-                <React.Fragment>
-                <CssBaseline />
-                <Paper elevation= {5} square className={classes.paper}>
-                  <Typography className={classes.text} variant="h5" gutterBottom>
+           <br>
+           </br>
+           <br>
+           </br>
+              <React.Fragment>
+                <Paper className={classes.paper}>
+                  <Typography className={classes.text} variant="h6" gutterBottom>
                     COMMENTS
                   </Typography>
-                  <List className={classes.comRoot}>
-                    {listing.comments.map(({ postedBy, text, person }) => (
-                        
+                    {listing.comments.map(({ postedBy, text}) => (
                         <ListItem >
                           <ListItemAvatar>
-                            {/*<Avatar alt="Profile Picture" src={person} />*/}
+                           <Avatar alt="Profile Picture" src = {postedBy} />
                           </ListItemAvatar>
                           <ListItemText primary={postedBy} secondary={text} />
                         </ListItem>
                     ))}
-                  </List>
                 </Paper>
               </React.Fragment>
-              
         </FormControl>
         {signedIn?(
         <Button className={classes.button}
