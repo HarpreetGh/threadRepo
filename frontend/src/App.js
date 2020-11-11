@@ -25,7 +25,7 @@ export const sections  = [
   { title: "Home", url: "/" },
   { title: "Wishlist", url: "/wishlist" },
   { title: "Sold", url: "/sold" },
-  { title: "New Listing", url: "/listings/create" },
+  { title: "Create Listing", url: "/listings/create" },
   { title: "All Listings", url: "/listings" },
   { title: "Profile", url: "/profile-page" },
 ];

@@ -18,6 +18,10 @@ const useStyles = makeStyles((theme) => ({
   title: {
     display: "flex",
     justifyContent: "center"
+  },
+  body1: {
+    display: "flex",
+    justifyContent: "center"
   }
 }));
 
