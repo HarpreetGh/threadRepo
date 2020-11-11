@@ -134,11 +134,10 @@ router.route("/filter").post((req, res) => {
 
 router.route("/update/:id").post((req, res) => {
   //example inputs for req.body
-  //ex1: { sold: true }
-  //ex2: { size: "XL"}
+  //ex1: { sold: true, size: "XL"}
   Listing.updateOne(
     { _id: req.params.id },
-    { [Object.keys(req.body)[0]]: req.body[Object.keys(req.body)[0]] },
+    req.body,
     { new: true },
     (err, listing) => {
       if (err) {
