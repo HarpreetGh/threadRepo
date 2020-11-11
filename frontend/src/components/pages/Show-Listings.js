@@ -83,7 +83,8 @@ export default function Album(props) {
     Axios.post("http://localhost:4000/listings/filter", filter)
       .then(response => {
         setListings([]);
-        setListings(response.data)
+        setListings(response.data.reverse())
+       // handleChange(sort);
       });
   }
 
@@ -207,7 +208,7 @@ export default function Album(props) {
     <FormControl className={classes.formControl}>
       <InputLabel>Sort by:</InputLabel>
       <Select
-        value={sort.id}
+        value={sort}
         onChange={(e) => handleChange(e.target.value)}
         input={<Input />}
       >

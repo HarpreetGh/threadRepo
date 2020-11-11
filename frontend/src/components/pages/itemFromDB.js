@@ -1,8 +1,10 @@
-import React, {useEffect, useState, useContext} from "react";
+import React, { useEffect, useState, useContext } from "react";
 import UserContext from "../../context/UserContext";
-import { Button, CssBaseline, Grid, FilledInput, InputLabel,
-         FormControl, Card, CardMedia, Paper, ListItem,
-         ListItemAvatar, ListItemText, Avatar  } from "@material-ui/core"; 
+import {
+  Button, CssBaseline, Grid, FilledInput, InputLabel,
+  FormControl, Card, CardMedia, Paper, ListItem, List,
+  ListItemAvatar, ListItemText, Avatar
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Row, Col } from "reactstrap";
 import ImageGallery from "react-image-gallery";
@@ -13,8 +15,6 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import CommentIcon from '@material-ui/icons/Comment';
-
-import Axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -53,207 +53,214 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 100
   },
   commentBox: {
-    minWidth: 500
+    minWidth: 600
   },
-   text: {
+  text: {
     padding: theme.spacing(1, 2, 0)
   },
   paper: {
-    paddingBottom: 50,
-    
+    paddingBottom: 5,
+    maxWidth: 600
   },
-
+  list: {
+    marginBottom: theme.spacing(2),
+    spacing: 50
+  },
+  comRoot: {
+    //width: '100%',
+    paddingBottom: 5,
+    minWidth: 600,
+    maxWidth: 600,
+    position: 'relative',
+    overflow: 'auto',
+    maxHeight: 250,
+  }
 }));
 
 //userData.user.displayName
-export default function Listing(){
-const [comment, setComment] = useState();
-const [listing, setListing] = useState({});
-const [isLoaded1, setIsLoaded1] = useState();
-const [onWish, setOnWish] = useState(false);
-const [wishlist, setWishlist] = useState([""]);
-const [images, setImages] = useState([]);
-const { userData, setUserData } = useContext(UserContext);
-let { id } = useParams(); //url 
-  
- useEffect(() => {
-  axios.get('http://localhost:4000/listings/' + id)
+export default function Listing() {
+  const [comment, setComment] = useState();
+  const [listing, setListing] = useState({});
+  const [isLoaded1, setIsLoaded1] = useState();
+  const [onWish, setOnWish] = useState(false);
+  const [wishlist, setWishlist] = useState([""]);
+  const [reload, setReload] = useState(false);
+  const [isLoaded2, setIsLoaded2] = useState(false);
+  const { userData, setUserData } = useContext(UserContext);
+  let { id } = useParams(); //url 
+  const classes = useStyles();
+
+  const getListing = () => {
+    axios.get('http://localhost:4000/listings/' + id)
       .then(response => {
-        console.log(response.data);
+        //console.log(response.data);
         setListing(response.data)
         setIsLoaded1(true);
-        console.log(localStorage.getItem("username"), response.data.username)
       })
-  
-    //always gets wishlist whether signed in or not  
-    axios.get('http://localhost:4000/users/wishlist/' + localStorage.getItem("id"))
-      .then(response => {
-        setOnWish(response.data.includes(id));
-        setWishlist(response.data);
-      })
-   //console.log(localStorage.getItem("username"), listing.username)
-   if (localStorage.getItem("id") === listing.username){
-     console.log("true");
-   }
-   else{
-     console.log("false")
-   }
+  }
+
+  const getWishList = () => {
+    if (!isLoaded2) {
+      setIsLoaded2(true);
+      axios.get('http://localhost:4000/users/wishlist/' + localStorage.getItem("id"))
+        .then(response => {
+          setOnWish(response.data.includes(id));
+          setWishlist(response.data);
+        })
+    }
+    return (
+      <p>
+        {onWish ? (
+          <Button onClick={onSubmit} color="secondary" variant="outlined" startIcon={< FavoriteIcon />} >
+            unFavorite </Button >
+        ) : (listing.sold ? ("") : (
+          <Button onClick={onSubmit} color="secondary" variant="contained" startIcon={<FavoriteBorderIcon />}>
+            Favorite </Button>
+        ))}
+      </p>
+    )
+  }
+
+  useEffect(() => {
+    getListing()
   }, [])
 
   const onSubmit = () => {
     console.log("onSubmit: ", onWish);
     console.log("Before: ", wishlist);
-    if(onWish){
+    if (onWish) {
       wishlist.splice(wishlist.indexOf(id), 1);
     }
-    else{
+    else {
       wishlist.push(id);
     }
-    console.log("After: ",wishlist);
-    axios.post('http://localhost:4000/users/update/' + localStorage.getItem("id"), {wishlist: wishlist})
+    console.log("After: ", wishlist);
+    axios.post('http://localhost:4000/users/update/' + localStorage.getItem("id"), { wishlist: wishlist })
       .then(response => {
         console.log(response.data);
       })
     setOnWish(!onWish);
   }
 
-
-
-
-  const makeComment = () => {
-    let commentItems = { comment: comment, listingId : id, userName:localStorage.getItem("username")  }
+  const uploadComment = () => {
+    let commentItems = { comment: comment, listingId: id, userName: localStorage.getItem("username") }
     console.log(commentItems);
-    Axios.post('http://localhost:4000/listings/comment/', commentItems)
+    axios.post('http://localhost:4000/listings/comment/', commentItems)
+      .then(response => {
+        getListing();
+        setReload(!reload);
+      })
+    setComment("");
+  }
 
-    
-    
+  const makeComment = () => (
+    <div>
+      <FormControl className={classes.commentBox}>
+        <InputLabel >Add comment</InputLabel>
+        <FilledInput multiline
+          rowsMax={2}
+          value={comment}
+          onChange={(e) => { setComment(e.target.value) }}
+        />
 
-  } 
-
-
-
-
-
-  const renderComment = (signedIn) => {
-    return(
-     
+      <Button className={classes.button} onClick={uploadComment}
+          variant="contained" color="primary" startIcon={<CommentIcon />}>COMMENT</Button>
+      </FormControl>
+    </div>
+  )
+  const renderComment = () => {
+    return (
       <div>
-         <br></br>
-         <br></br>
-         <br></br>
-         <br></br>
-          <FormControl className= {classes.commentBox} variant="filled">
-            <InputLabel >Add comment</InputLabel>
-            <FilledInput multiline
-             rowsMax={2}
-            //value={comment}
-            onChange={(e) => {setComment(e.target.value)}}
-           />
-           <br>
-           </br>
-           <br>
-           </br>
-              <React.Fragment>
-                <Paper className={classes.paper}>
-                  <Typography className={classes.text} variant="h6" gutterBottom>
-                    COMMENTS
-                  </Typography>
-                    {listing.comments.map(({ postedBy, text}) => (
-                        <ListItem >
-                          <ListItemAvatar>
-                           <Avatar alt="Profile Picture" src = {postedBy} />
-                          </ListItemAvatar>
-                          <ListItemText primary={postedBy} secondary={text} />
-                        </ListItem>
-                    ))}
-                </Paper>
-              </React.Fragment>
-        </FormControl>
-        {signedIn?(
-        <Button className={classes.button}
-        
-        onClick={makeComment}
-         
-        variant="contained" color="default" startIcon={<CommentIcon />}>COMMENT</Button>
-        ):(
-          <Button className={classes.button} href={"/login"}  variant="outlined" color="default">LOGIN TO COMMENT</Button>
-        )}
+        <React.Fragment>
+          <FormControl>
+            <Paper className={classes.comRoot}>
+              <Typography className={classes.text} variant="h6" gutterBottom>
+                COMMENTS
+              </Typography>
+              {listing.comments.length < 1? ("  No Comments have been made. Be the first!"):(
+                listing.comments.map(({ postedBy, text }) => (
+                    <ListItem >
+                      <ListItemAvatar>
+                        <Avatar alt="Profile Picture" src={postedBy} />
+                      </ListItemAvatar>
+                      <ListItemText primary={postedBy} secondary={text} />
+                    </ListItem>
+                )))}
+            </Paper>
+            {userData.user ? (makeComment()) : (
+              <Button className={classes.button} href={"/login"}
+                variant="outlined" color="default">LOGIN TO COMMENT</Button>
+            )}
+          </FormControl>
+        </React.Fragment>
       </div>
-    )}
-
-
-
-
-
+    )
+  }
 
   const Buttons = (signedIn) => {
-    if (listing.sold) { return(
-      <div style={{ padding: 10 }}>
-        <Typography> Sold </Typography>
-        {" "}
-        {onWish? ( 
-          <Button onClick={onSubmit} color="secondary" variant="outlined" startIcon={<FavoriteIcon />}>
-              unFavorite </Button>):("")}
-      </div>
-    )}
+    if (listing.sold) {
+      if (signedIn) {
+        return (
+          <div style={{ padding: 10 }}>
+            <Typography> Sold </Typography>
+            {" "}
+            {getWishList()}
+          </div>
+        )
+      }
+      else {
+        return (
+          <div style={{ padding: 10 }}>
+            <Typography> Sold </Typography>
+          </div>
+        )
+      }
+    }
 
     else if (signedIn) {
-      if (localStorage.getItem("username") === listing.username) { return(
+      if (localStorage.getItem("username") === listing.username) {
+        return (
           <div style={{ padding: 10 }}>
             <Button href={"/edit-page/" + id} size="medium" color="primary" variant="outlined">
               Edit
-            </Button>
+          </Button>
             {" "}
-            {onWish ? (
-              <Button onClick={onSubmit} color="secondary" variant="outlined" startIcon={<FavoriteIcon />}>
-                unFavorite </Button>
-            ):(
-              <Button onClick={onSubmit} color="secondary" variant="contained" startIcon={<FavoriteBorderIcon />}>
-                Favorite </Button>
-            )}
+            {getWishList()}
           </div>
-      )}
+        )
+      }
 
-      else { return (
+      else {
+        return (
           <div style={{ padding: 10 }}>
             <Button href={"/Checkout/" + id}
               variant="contained"
               color="primary"
               startIcon={<ShoppingBasketIcon />}>
               Buy Now </Button>
-              {" "}
-              {onWish?(
-                <Button onClick={onSubmit} color="secondary" variant="outlined" startIcon={<FavoriteIcon />}>
-                  unFavorite </Button>
-              ):(
-                <Button onClick={onSubmit} color="secondary" variant="contained" startIcon={<FavoriteBorderIcon />}>
-                  Favorite </Button>
-              )}
+            {" "}
+            {getWishList()}
           </div>
-        )}
+        )
+      }
     }
 
-    else { return(
+    else {
+      return (
         <div style={{ padding: 10 }}>
           <Button href={"/login"}
             variant="contained"
             color="primary">
             Login to Purchase </Button>
         </div>
-      )}
+      )
+    }
   }
 
-
-
-
-
-
-
-    const classes = useStyles();
-    if(!isLoaded1){
-      return <div>Loading...</div>;
-    }
-    else{
+  if (!isLoaded1) {
+    return <div>Loading...</div>;
+  }
+  else {
     return (
       <React.Fragment>
         <CssBaseline />
@@ -261,14 +268,14 @@ let { id } = useParams(); //url
           <h1>{listing.name}</h1>
         </div>
         {/*<div><img src={listing.image} /></div>*/}
-        
+
         <Grid>
           <Row className={classes.rLayout}>
             <Col className={classes.c1Layout}>
 
               <ImageGallery
-              showPlayButton={false} 
-              items={[{ original: listing.image, thumbnail: listing.image }]} />
+                showPlayButton={false}
+                items={[{ original: listing.image, thumbnail: listing.image }]} />
             </Col>
             <Col className={classes.c2Layout}>
               <div style={{ padding: 5 }}>
@@ -299,19 +306,18 @@ let { id } = useParams(); //url
                     {"Condition: " + listing.condition}
                   </Col>
                 </Row>
-                <Row>   
-                 {userData.user? Buttons(true):(Buttons(false))}
+                <Row>
+                  {userData.user ? Buttons(true) : (Buttons(false))}
                 </Row>
               </div>
               <hr />
               <div>
-              {userData.user? renderComment(true):(renderComment(false))}
-             </div>
+                {userData.user ? renderComment() : (renderComment())}
+              </div>
             </Col>
           </Row>
         </Grid>
       </React.Fragment>
     );
+  }
 }
-}
-
