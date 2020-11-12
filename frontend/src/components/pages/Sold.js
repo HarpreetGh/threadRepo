@@ -5,10 +5,7 @@ export default function HomePage() {
   return (
     <div>
       <Album showFilters={true} inputFilter={{
-          sold: true,
-          category: [], size: [],
-          color: [], condition: []
-      }}/>
+          sold: true}}/>
     </div>
   )
 }

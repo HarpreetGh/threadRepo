@@ -43,7 +43,8 @@ const listingSchema = new Schema({
         type: Number, 
         required: true,
         min: 0,
-        default: 0
+        default: 0,
+        max: 100000
     },
     likes: {  // The price of the listing
         type: Number,
