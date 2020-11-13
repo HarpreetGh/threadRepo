@@ -139,8 +139,8 @@ export default function Checkout() {
                   Thank you for your order.
                 </Typography>
                 <Typography variant="subtitle1">
-                  Your order number is #{getRandomInt(2000000, 2999999)}. We have emailed your order confirmation, and will
-                  send you an update when your order has shipped.
+                  You can view your recent purchase in your history. You may go back to the home page
+                  to view or buy listed items. 
                 </Typography>
               </React.Fragment>
             ) : (

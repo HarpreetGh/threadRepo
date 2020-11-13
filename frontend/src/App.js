@@ -85,7 +85,7 @@ export default function App() {
               <Route path="/edit-page/:id" exact component={EditPage} />
             </Switch>
           </div>
-          <Copyright />
+        
         </UserContext.Provider>
       </BrowserRouter>
     </>
