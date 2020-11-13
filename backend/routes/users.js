@@ -212,8 +212,9 @@ router.route('/buySuccess').post((req,res) => {
 let userHistory = [];
 const userId = req.body.buyerId
 
+
 userHistory.push({
-    dateOfPurchase: Date.now(),
+    dateOfPurchase: new Date(),
     name: req.body.listingName,
     id: req.body.listingId,
     price: req.body.listingPrice
