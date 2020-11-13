@@ -4,10 +4,12 @@ import AddIcon from '@material-ui/icons/Add';
 import {
   Button, Card, CardActions, CardContent,
   CardMedia, CssBaseline, Grid, Typography,
-  Container, Fab, FormControl, Input, 
-  InputLabel, Select, MenuItem,
-  ListItemText, Checkbox, Chip
+  Container, Fab, FormControl, Input,
+  InputLabel, Select, MenuItem, Drawer,
+  ListItemText, Checkbox, Chip, Toolbar,
+  Divider, Slider
 } from '@material-ui/core';
+import { Row, Col } from "reactstrap";
 import Axios from "axios";
 import {Filters} from "../misc/filters";
 
@@ -65,10 +67,15 @@ export default function Album(props) {
   const [reLoad, setReLoad] = useState(false);
   const [listings, setListings] = useState([]);
   const [showFilters, setShowFilters] = useState(props.showFilters);
-  const [filter, setFilter] = useState(props.inputFilter)
+  const [filter, setFilter] = useState({
+    ...{ category: [], sizeF: [], sizeG: [], color: [], condition: [] },
+    ...props.inputFilter
+  });
+  //{ ...object1, ...props.inputFilter })
   const [sort, setSort] = useState(sortOptions[0]);
 
   useEffect(() => {
+    if (!props.showFilters) { setFilter(props.inputFilter) }
     Axios.post("http://localhost:4000/listings/filter", filter)
       .then(response => {
         setIsLoaded(true);
@@ -77,25 +84,29 @@ export default function Album(props) {
   }, [])
 
   const handleToggle = (id, value) => {
+    console.log(id, value);
     var newFilter = filter;
+    console.log(newFilter[id])
     newFilter[id] = value;
+    console.log(newFilter[id])
+    console.log(newFilter);
+    console.log(filter);
     setFilter(newFilter);
-    Axios.post("http://localhost:4000/listings/filter", filter)
+    newFilter.size = newFilter.sizeG.concat(newFilter.sizeF);
+
+    var tempF = newFilter.sizeF; var tempG = newFilter.sizeG;
+    newFilter.sizeF = []; newFilter.sizeG = [];
+    console.log(newFilter);
+    Axios.post("http://localhost:4000/listings/filter", newFilter)
       .then(response => {
         setListings([]);
         setListings(response.data.reverse())
-       // handleChange(sort);
       });
+    newFilter.sizeF = tempF; newFilter.sizeG = tempG;
   }
-
-  const removeNum = (i) => {
-    if ((parseInt(i) + "") === "NaN") { return i }
-  }
-  const removeStr = (i) => {
-    if ((parseInt(i) + "") !== "NaN") { return i }
-  }
-
+  
   const filterList = (currentFilter) => (
+    <Col>
     <FormControl className={classes.formControl}>
       <InputLabel>{currentFilter.name}</InputLabel>
       <Select
@@ -120,8 +131,28 @@ export default function Album(props) {
         ))}
       </Select>
     </FormControl>
+    </Col>
   );
-
+/*
+  const filterSlide = (currentFilter) => (
+    <Col>
+    <FormControl className={classes.formControl}>
+      <Typography gutterBottom>
+        {currentFilter.name}
+      </Typography>
+      <Slider
+        min={currentFilter.list[0]}
+        //step={15}
+        max={currentFilter.list[currentFilter.list[currentFilter.list.length-1]]}
+        value={filter[currentFilter.id]}
+        onChange={(e) => handleToggle(currentFilter.id, e.target.value)}
+        valueLabelDisplay="auto"
+        aria-labelledby="range-slider"
+      />
+    </FormControl>
+    </Col>
+  );
+*/
   const displayListings = () => {
     return (
       <Container className={classes.cardGrid} maxWidth="md">
@@ -252,28 +283,40 @@ export default function Album(props) {
       <React.Fragment>
         <CssBaseline />
         <main>
+          <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+          <Toolbar />
           {showFilters?(
             <div>
               {filterList(Filters.category) /*Category*/}
 
+            
               {(filter.category.includes("Upper Thread") || filter.category.includes("Lower Thread")) ? (
-                filterList(Filters.size[0])
-              ) : (filter.size.filter(removeNum).length === 0 ? ("") :
-                (handleToggle("size", filter.size.filter(removeStr)))
+                filterList(Filters.sizeG)
+              ) : (filter.sizeG.length === 0 ? ("") :
+                (handleToggle("sizeG", []))
                 )} 
-
+             
+      
               {(filter.category.includes("Footwear")) ? (
-                filterList(Filters.size[1])
-              ) : (filter.size.filter(removeStr).length === 0? ("") : 
-              (handleToggle("size", filter.size.filter(removeNum)))
-              )} 
-              
+                filterList(Filters.sizeF)
+                ) : (filter.sizeF.length === 0? ("") : 
+              (handleToggle("sizeF", []))
+              )}
+          
               {filterList(Filters.condition)}
               {filterList(Filters.color)}
             </div>
             ):("")
           }
+          <Divider />
           <div>{sortList()}</div>
+          </Drawer>
           {reLoad ? (displayListings()) : (displayListings())}
           
         </main>
