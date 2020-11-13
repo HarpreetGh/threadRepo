@@ -239,7 +239,7 @@ export default function Album(props) {
     <FormControl className={classes.formControl}>
       <InputLabel>Sort by:</InputLabel>
       <Select
-        value={sort.id}
+        value={sort}
         onChange={(e) => handleChange(e.target.value)}
         input={<Input />}
       >

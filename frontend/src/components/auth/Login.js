@@ -18,6 +18,10 @@ const useStyles = makeStyles((theme) => ({
   title: {
     display: "flex",
     justifyContent: "center"
+  },
+  body1: {
+    display: "flex",
+    justifyContent: "center"
   }
 }));
 
@@ -110,12 +114,6 @@ export default function Login() {
                 />
               </FormControl>
             </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox value="allowExtraemails" color="primary" />}
-                label="I am not a robot"
-              />
-            </Grid>
           </Grid>
           <Button
             onSubmit={onSubmit}
@@ -129,9 +127,9 @@ export default function Login() {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="/register" variant="body2">
-                Don't have an account? Sign up
-              </Link>
+              <Button href={"/register"} size="large" color="secondary" variant="contained" fullWidth="true">
+                Don't have an account? Sign up here
+              </Button>
             </Grid>
           </Grid>
         </form>
