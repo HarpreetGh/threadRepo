@@ -98,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ProfilePage() {
+export default function LiveListings() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -114,8 +114,8 @@ export default function ProfilePage() {
     setOpen(false);
   };
 
-  useEffect(() => {// function gets all the listings for the user (live & sold)
-    axios.post("http://localhost:4000/listings/filter", {username: localStorage.getItem("username")})
+  useEffect(() => {// function gets all the listings for the user (live only)
+    axios.post("http://localhost:4000/listings/filter", {username: localStorage.getItem("username"), sold:false})
       .then(response => {
         setIsLoaded(true);
         setListings([]);
@@ -141,27 +141,6 @@ export default function ProfilePage() {
     */
   }
 
-  function ListingStatus(bVal, tID){// function verifies if item is sold or not, then gives the necessary button uses
-    if(!bVal)
-      return(
-        <div>
-          <Button href={"/edit-page/" + tID} size="medium" color="primary">
-            EDIT
-          </Button>
-          <Button size="medium" color="primary" onclick={deleteItem}>
-            DELETE
-          </Button>
-        </div>
-      );
-    else return(
-      <div>
-        <Button href={"/listings/" + tID} size="medium" color="secondary">
-          SOLD
-        </Button>
-      </div>
-    );
-  }
-
   const displayListings = () => {// function maps a display template to each listed item
     return(
       <Container maxWidth="md" className={classes.cardGrid}>
@@ -183,7 +162,12 @@ export default function ProfilePage() {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  {ListingStatus(item.sold, item._id)}
+                  <Button href={"/edit-page/" + item._id} size="medium" color="primary">
+                    EDIT
+                  </Button>
+                  <Button size="medium" color="primary" onclick={deleteItem}>
+                    DELETE
+                  </Button>
                 </CardActions>
               </Card>
             </Grid>
@@ -220,7 +204,7 @@ export default function ProfilePage() {
                   <MenuIcon/>
                 </IconButton>
                 <Typography variant="h6" noWrap>
-                  Welcome Back {localStorage.getItem("username")}!
+                  {localStorage.getItem("username")}'s LIVE Items!
                 </Typography>
               </Toolbar>
             </AppBar>
@@ -241,7 +225,7 @@ export default function ProfilePage() {
               <Divider/>
               <List>
                 {[
-                  {link: "http://localhost:3000/live-listings", text: "Live Listings", index: 0},
+                  {link: "#", text: "Live Listings", index: 0},
                   {link: "http://localhost:3000/sold-listings", text: "Sold Listings", index: 1},
                   {link: "http://localhost:3000/order-history", text: "Order History", index: 2},
                   {link: "http://localhost:3000/wishlist", text: "Wishlist", index: 3},

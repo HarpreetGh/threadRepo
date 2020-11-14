@@ -21,6 +21,7 @@ import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import Album from "./Show-Listings"
 
 const drawerWidth = 240;
 
@@ -41,12 +42,12 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   root: {
-    display: "flex",
+    display: 'flex',
   },
   appBar: {
     height: 50,
-    justifyContent: "center",
-    transition: theme.transitions.create(["margin", "width"], {
+    justifyContent: 'center',
+    transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
@@ -54,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
-    transition: theme.transitions.create(["margin", "width"], {
+    transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
@@ -63,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   hide: {
-    display: "none",
+    display: 'none',
   },
   drawer: {
     width: drawerWidth,
@@ -73,24 +74,24 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
   },
   drawerHeader: {
-    display: "flex",
-    alignItems: "center",
+    display: 'flex',
+    alignItems: 'center',
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
-    transition: theme.transitions.create("margin", {
+    transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: -drawerWidth,
   },
   contentShift: {
-    transition: theme.transitions.create("margin", {
+    transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
@@ -98,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ProfilePage() {
+export default function OrderHistory() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -114,53 +115,22 @@ export default function ProfilePage() {
     setOpen(false);
   };
 
-  useEffect(() => {// function gets all the listings for the user (live & sold)
-    axios.post("http://localhost:4000/listings/filter", {username: localStorage.getItem("username")})
-      .then(response => {
+  useEffect(() => {// function gets all the listings bought by the user
+    fetch("http://localhost:4000/users/history/" + localStorage.getItem("id"))
+      .then(res => res.json())
+      .then(data => {
+        //console.log("the data is: ", data);
         setIsLoaded(true);
-        setListings([]);
-        setListings(response.data);
-      },
-      (error) => {
-        setIsLoaded(true);
-        setError(error);
+        setListings(data);
+        },
+        (error) => {
+          setIsLoaded(true);
+          setError(error);
       });
   }, [])
-
-  function deleteItem(){// function deletes an individual item
-      console.log("you are trying to delete item#: ")
-      /*
-    axios.delete("http://localhost:4000/listings/" + itemID)
-      .then(response => {
-        setReply(response.data);
-      },
-      (error) => {
-        setError(error);
-      }
-    );
-    */
-  }
-
-  function ListingStatus(bVal, tID){// function verifies if item is sold or not, then gives the necessary button uses
-    if(!bVal)
-      return(
-        <div>
-          <Button href={"/edit-page/" + tID} size="medium" color="primary">
-            EDIT
-          </Button>
-          <Button size="medium" color="primary" onclick={deleteItem}>
-            DELETE
-          </Button>
-        </div>
-      );
-    else return(
-      <div>
-        <Button href={"/listings/" + tID} size="medium" color="secondary">
-          SOLD
-        </Button>
-      </div>
-    );
-  }
+  console.log('1: ', listings[0])//{dateOfPurchase: 1605224721083, name: "IS Jacket", id: "5fab216a35ed6f157c18dd03", price: 200}
+  //why isn't "listings[0].id" valid?
+  //console.log("data is now: ", listings);
 
   const displayListings = () => {// function maps a display template to each listed item
     return(
@@ -183,7 +153,9 @@ export default function ProfilePage() {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  {ListingStatus(item.sold, item._id)}
+                  <Button href={"/listings/" + item._id} size="medium" color="secondary">
+                    Bought
+                  </Button>
                 </CardActions>
               </Card>
             </Grid>
@@ -220,7 +192,7 @@ export default function ProfilePage() {
                   <MenuIcon/>
                 </IconButton>
                 <Typography variant="h6" noWrap>
-                  Welcome Back {localStorage.getItem("username")}!
+                  {localStorage.getItem("username")}'s ORDER History!
                 </Typography>
               </Toolbar>
             </AppBar>
@@ -243,9 +215,9 @@ export default function ProfilePage() {
                 {[
                   {link: "http://localhost:3000/live-listings", text: "Live Listings", index: 0},
                   {link: "http://localhost:3000/sold-listings", text: "Sold Listings", index: 1},
-                  {link: "http://localhost:3000/order-history", text: "Order History", index: 2},
+                  {link: "#", text: "Order History", index: 2},
                   {link: "http://localhost:3000/wishlist", text: "Wishlist", index: 3},
-                  {link: "http://localhost:3000/messages-page", text: "Messages", index: 4},
+                  {link: "http://localhost:3000//message-page", text: "Messages", index: 4},
                   {link: "http://localhost:3000/user-settings", text: "Settings", index: 5},
                 ].map((obj) => (
                   <Link href={obj.link}>
@@ -266,11 +238,11 @@ export default function ProfilePage() {
               <Divider/>
               <List>
                 {[
-                  {link: "#", text: "Customer Support", index: 0},
-                  {link: "#", text: "Contact Email", index: 1},
-                  {link: "#", text: "Contact Number", index: 2},
+                  {link: '#', text: 'Customer Support', index: 0},
+                  {link: '#', text: 'Contact Email', index: 1},
+                  {link: '#', text: 'Contact Number', index: 2},
                 ].map((obj) => (
-                  <Link href = {obj.link}>
+                  <Link href={obj.link}>
                     <ListItem button key={obj.text}>
                       <ListItemIcon>
                         {obj.index === 0 && <ContactSupportIcon/>}
@@ -287,14 +259,19 @@ export default function ProfilePage() {
           <main className={clsx(classes.content, {[classes.contentShift]: open,})}>
             <div className={classes.drawerHeader}/>
             <Typography paragraph>
-              {displayListings()}
+              {/*(listings.length > 0) ? (
+                <Album showFilters={false} inputFilter={{_id: listings,}}/>
+              ):(
+                <h1>No Items In Your History</h1>
+              )*/}
+              {displayListings}
             </Typography>
           </main>
         </div>
       );
     }
   }
-  else{// if user isnt logged in, they get redirected to login
+  else{// redirects to login page if not signed in
     return(
         <Redirect to="/login"/>
     );
