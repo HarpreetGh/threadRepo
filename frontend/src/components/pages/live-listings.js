@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { Redirect } from 'react-router-dom';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import axios from 'axios';
 import {
   Drawer, CssBaseline, AppBar, Toolbar, List, Typography,
   Divider, IconButton, ListItem, ListItemIcon, ListItemText,
-  Link
+  Link, Container, Grid, CardMedia, CardContent, CardActions,
+  Card, Button
 } from '@material-ui/core';
 import MoneyOffIcon from '@material-ui/icons/MoneyOff';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
@@ -19,7 +21,6 @@ import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import Album from "./Show-Listings"
 
 const drawerWidth = 240;
 
@@ -97,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SoldListings() {
+export default function LiveListings() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -113,26 +114,68 @@ export default function SoldListings() {
     setOpen(false);
   };
 
-  useEffect(() => {// function gets all the listings saved in the user's wishlist
-    fetch("http://localhost:4000/users/wishlist/" + localStorage.getItem("id"))
-      .then(res => res.json())
-      .then((result) => {
+  useEffect(() => {// function gets all the listings for the user (live only)
+    axios.post("http://localhost:4000/listings/filter", {username: localStorage.getItem("username"), sold:false})
+      .then(response => {
         setIsLoaded(true);
-        result.shift();
-        setListings(result);
-        console.log('the results are:', result);
-        },
-        (error) => {
-          setIsLoaded(true);
-          setError(error);
-          return(
-            <h1>
-              ERROR: {error}
-            </h1>
-          )
-        }
-      )
+        setListings([]);
+        setListings(response.data);
+      },
+      (error) => {
+        setIsLoaded(true);
+        setError(error);
+      });
   }, [])
+
+  function deleteItem(){// function deletes an individual item
+      console.log("you are trying to delete item#: ")
+      /*
+    axios.delete("http://localhost:4000/listings/" + itemID)
+      .then(response => {
+        setReply(response.data);
+      },
+      (error) => {
+        setError(error);
+      }
+    );
+    */
+  }
+
+  const displayListings = () => {// function maps a display template to each listed item
+    return(
+      <Container maxWidth="md" className={classes.cardGrid}>
+        <Grid container spacing={4}>
+          {listings.map(item => (
+            <Grid item key={listings} xs={12} sm={6} md={4}>
+              <Card className={classes.card}>
+                <CardMedia
+                  className={classes.cardMedia}
+                  image={item.image}
+                  title="Image title"
+                />
+                <CardContent className={classes.cardContent}>
+                  <Typography gutterBottom variant="h5" component="h2">
+                    {item.name}
+                  </Typography>
+                  <Typography>
+                    {item.description}
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Button href={"/edit-page/" + item._id} size="medium" color="primary">
+                    EDIT
+                  </Button>
+                  <Button size="medium" color="primary" onclick={deleteItem}>
+                    DELETE
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+    )
+  };
 
   if(localStorage.getItem("auth-token") !== ""){// check if user logged in
     if(error){// handling errors
@@ -147,8 +190,8 @@ export default function SoldListings() {
           <div className={classes.root}>
             <CssBaseline/>
             <AppBar
-              position="relative"
-              className={clsx(classes.appBar, {[classes.appBarShift]: open,})}
+            position="relative"
+            className={clsx(classes.appBar, {[classes.appBarShift]: open,})}
             >
               <Toolbar>
                 <IconButton
@@ -161,7 +204,7 @@ export default function SoldListings() {
                   <MenuIcon/>
                 </IconButton>
                 <Typography variant="h6" noWrap>
-                  {localStorage.getItem("username")}'s WISHLIST!
+                  {localStorage.getItem("username")}'s LIVE Items!
                 </Typography>
               </Toolbar>
             </AppBar>
@@ -182,10 +225,10 @@ export default function SoldListings() {
               <Divider/>
               <List>
                 {[
-                  {link: "http://localhost:3000/live-listings", text: "Live Listings", index: 0},
+                  {link: "#", text: "Live Listings", index: 0},
                   {link: "http://localhost:3000/sold-listings", text: "Sold Listings", index: 1},
                   {link: "http://localhost:3000/order-history", text: "Order History", index: 2},
-                  {link: "#", text: "Wishlist", index: 3},
+                  {link: "http://localhost:3000/wishlist", text: "Wishlist", index: 3},
                   {link: "http://localhost:3000/messages-page", text: "Messages", index: 4},
                   {link: "http://localhost:3000/user-settings", text: "Settings", index: 5},
                 ].map((obj) => (
@@ -211,14 +254,14 @@ export default function SoldListings() {
                   {link: "#", text: "Contact Email", index: 1},
                   {link: "#", text: "Contact Number", index: 2},
                 ].map((obj) => (
-                  <Link href={obj.link}>
+                  <Link href = {obj.link}>
                     <ListItem button key={obj.text}>
                       <ListItemIcon>
                         {obj.index === 0 && <ContactSupportIcon/>}
                         {obj.index === 1 && <ContactMailIcon/>}
                         {obj.index === 2 && <ContactPhoneIcon/>}
                       </ListItemIcon>
-                      <ListItemText primary={obj.text}/>
+                    <ListItemText primary={obj.text}/>
                     </ListItem>
                   </Link>
                 ))}
@@ -228,18 +271,14 @@ export default function SoldListings() {
           <main className={clsx(classes.content, {[classes.contentShift]: open,})}>
             <div className={classes.drawerHeader}/>
             <Typography paragraph>
-              {(listings.length > 0) ? (
-                  <Album showFilters={false} inputFilter={{_id: listings,}}/>
-              ):(
-                  <h1>No Items In Your WishList</h1>
-              )}
+              {displayListings()}
             </Typography>
           </main>
         </div>
       );
     }
   }
-  else{// redirects to login page if not signed in
+  else{// if user isnt logged in, they get redirected to login
     return(
         <Redirect to="/login"/>
     );

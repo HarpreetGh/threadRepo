@@ -19,7 +19,11 @@ import UserContext from "./context/UserContext.js";
 import Copyright from "./components/layout/Copyright.js";
 import ProfilePage from "./components/pages/profile-page.js";
 import EditPage from "./components/pages/edit-page.js";
-
+import LiveListings from "./components/pages/live-listings.js";
+import SoldListings from "./components/pages/sold-listings.js";
+import OrderHistory from "./components/pages/order-history.js";
+import UserSettings from "./components/pages/user-settings.js";
+import MessagesPage from "./components/pages/messages-page.js";
 
 export const sections  = [
   { title: "Home", url: "/" },
@@ -83,6 +87,11 @@ export default function App() {
               <Route path="/register" exact component={Register} />
               <Route path="/profile-page" exact component={ProfilePage} />
               <Route path="/edit-page/:id" exact component={EditPage} />
+              <Route path="/live-listings" exact component={LiveListings} />
+              <Route path="/sold-listings" exact component={SoldListings} />
+              <Route path="/order-history" exact component={OrderHistory} />
+              <Route path="/user-settings" exact component={UserSettings} />
+              <Route path="/messages-page" exact component={MessagesPage} />
             </Switch>
           </div>
           <Copyright />

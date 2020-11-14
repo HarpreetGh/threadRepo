@@ -19,7 +19,7 @@ const listingSchema = new Schema({
         trim: true,
         maxlength: 400
     },
-    category: {  // The price of the listing
+    category: {  // The garment type of the listing
         type: String,
         required: true,
         trim: true

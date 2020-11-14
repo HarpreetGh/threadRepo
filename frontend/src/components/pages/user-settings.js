@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';// used to redirect user if not logged in
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import axios from 'axios';
 import {
   Drawer, CssBaseline, AppBar, Toolbar, List, Typography,
   Divider, IconButton, ListItem, ListItemIcon, ListItemText,
-  Link
+  Link, Container, Grid, CardMedia, CardContent, CardActions,
+  Card, Button
 } from '@material-ui/core';
 import MoneyOffIcon from '@material-ui/icons/MoneyOff';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
@@ -19,7 +21,6 @@ import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import Album from "./Show-Listings"
 
 const drawerWidth = 240;
 
@@ -97,13 +98,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SoldListings() {
+export default function UserSettings() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [listings, setListings] = useState([]);
   
   const handleDrawerOpen = () => {// function opens the side drawer
     setOpen(true);
@@ -113,25 +113,15 @@ export default function SoldListings() {
     setOpen(false);
   };
 
-  useEffect(() => {// function gets all the listings saved in the user's wishlist
-    fetch("http://localhost:4000/users/wishlist/" + localStorage.getItem("id"))
-      .then(res => res.json())
-      .then((result) => {
+  useEffect(() => {// gets all the info of the user
+    axios.post("http://localhost:4000/listings/filter", {username: localStorage.getItem("username")})
+      .then(response => {
         setIsLoaded(true);
-        result.shift();
-        setListings(result);
-        console.log('the results are:', result);
-        },
-        (error) => {
-          setIsLoaded(true);
-          setError(error);
-          return(
-            <h1>
-              ERROR: {error}
-            </h1>
-          )
-        }
-      )
+      },
+      (error) => {
+        setIsLoaded(true);
+        setError(error);
+      });
   }, [])
 
   if(localStorage.getItem("auth-token") !== ""){// check if user logged in
@@ -145,10 +135,10 @@ export default function SoldListings() {
       return(
         <div>
           <div className={classes.root}>
-            <CssBaseline/>
+            <CssBaseline />
             <AppBar
-              position="relative"
-              className={clsx(classes.appBar, {[classes.appBarShift]: open,})}
+            position="relative"
+            className={clsx(classes.appBar, {[classes.appBarShift]: open,})}
             >
               <Toolbar>
                 <IconButton
@@ -161,7 +151,7 @@ export default function SoldListings() {
                   <MenuIcon/>
                 </IconButton>
                 <Typography variant="h6" noWrap>
-                  {localStorage.getItem("username")}'s WISHLIST!
+                  {localStorage.getItem("username")}'s SETTINGS!
                 </Typography>
               </Toolbar>
             </AppBar>
@@ -185,11 +175,11 @@ export default function SoldListings() {
                   {link: "http://localhost:3000/live-listings", text: "Live Listings", index: 0},
                   {link: "http://localhost:3000/sold-listings", text: "Sold Listings", index: 1},
                   {link: "http://localhost:3000/order-history", text: "Order History", index: 2},
-                  {link: "#", text: "Wishlist", index: 3},
+                  {link: "http://localhost:3000/wishlist", text: "Wishlist", index: 3},
                   {link: "http://localhost:3000/messages-page", text: "Messages", index: 4},
-                  {link: "http://localhost:3000/user-settings", text: "Settings", index: 5},
+                  {link: "#", text: "Settings", index: 5},
                 ].map((obj) => (
-                  <Link href={obj.link}>
+                  <Link href = {obj.link}>
                     <ListItem button key={obj.text}>
                       <ListItemIcon>
                         {obj.index === 0 && <MoneyOffIcon/>}
@@ -207,9 +197,9 @@ export default function SoldListings() {
               <Divider/>
               <List>
                 {[
-                  {link: "#", text: "Customer Support", index: 0},
-                  {link: "#", text: "Contact Email", index: 1},
-                  {link: "#", text: "Contact Number", index: 2},
+                  {link: '#', text: 'Customer Support', index: 0},
+                  {link: '#', text: 'Contact Email', index: 1},
+                  {link: '#', text: 'Contact Number', index: 2},
                 ].map((obj) => (
                   <Link href={obj.link}>
                     <ListItem button key={obj.text}>
@@ -218,7 +208,7 @@ export default function SoldListings() {
                         {obj.index === 1 && <ContactMailIcon/>}
                         {obj.index === 2 && <ContactPhoneIcon/>}
                       </ListItemIcon>
-                      <ListItemText primary={obj.text}/>
+                    <ListItemText primary={obj.text}/>
                     </ListItem>
                   </Link>
                 ))}
@@ -226,14 +216,7 @@ export default function SoldListings() {
             </Drawer>
           </div>
           <main className={clsx(classes.content, {[classes.contentShift]: open,})}>
-            <div className={classes.drawerHeader}/>
-            <Typography paragraph>
-              {(listings.length > 0) ? (
-                  <Album showFilters={false} inputFilter={{_id: listings,}}/>
-              ):(
-                  <h1>No Items In Your WishList</h1>
-              )}
-            </Typography>
+            <div>USER SETTINGS</div>
           </main>
         </div>
       );

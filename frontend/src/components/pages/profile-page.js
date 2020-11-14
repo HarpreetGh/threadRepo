@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { Redirect } from 'react-router-dom';// used to redirect user if not logged in
+import { Redirect } from 'react-router-dom';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import axios from 'axios';
 import {
@@ -35,18 +35,18 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
   },
   cardMedia: {
-    paddingTop: "100%", // 16:9
+    paddingTop: "100%",
   },
   cardContent: {
     flexGrow: 1,
   },
   root: {
-    display: 'flex',
+    display: "flex",
   },
   appBar: {
     height: 50,
-    justifyContent: 'center',
-    transition: theme.transitions.create(['margin', 'width'], {
+    justifyContent: "center",
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   appBarShift: {
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
-    transition: theme.transitions.create(['margin', 'width'], {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   hide: {
-    display: 'none',
+    display: "none",
   },
   drawer: {
     width: drawerWidth,
@@ -73,24 +73,24 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
   },
   drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end",
   },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: -drawerWidth,
   },
   contentShift: {
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
@@ -106,15 +106,15 @@ export default function ProfilePage() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [listings, setListings] = useState([]);
   
-  const handleDrawerOpen = () => {
+  const handleDrawerOpen = () => {// function opens the side drawer
     setOpen(true);
   };
 
-  const handleDrawerClose = () => {
+  const handleDrawerClose = () => {// function closes the side drawer
     setOpen(false);
   };
 
-  useEffect(() => {
+  useEffect(() => {// function gets all the listings for the user (live & sold)
     axios.post("http://localhost:4000/listings/filter", {username: localStorage.getItem("username")})
       .then(response => {
         setIsLoaded(true);
@@ -127,7 +127,7 @@ export default function ProfilePage() {
       });
   }, [])
 
-  function deleteItem(){
+  function deleteItem(){// function deletes an individual item
       console.log("you are trying to delete item#: ")
       /*
     axios.delete("http://localhost:4000/listings/" + itemID)
@@ -141,8 +141,29 @@ export default function ProfilePage() {
     */
   }
 
-  const displayListings = () => {
-    return (
+  function ListingStatus(bVal, tID){// function verifies if item is sold or not, then gives the necessary button uses
+    if(!bVal)
+      return(
+        <div>
+          <Button href={"/edit-page/" + tID} size="medium" color="primary">
+            EDIT
+          </Button>
+          <Button size="medium" color="primary" onclick={deleteItem}>
+            DELETE
+          </Button>
+        </div>
+      );
+    else return(
+      <div>
+        <Button href={"/listings/" + tID} size="medium" color="secondary">
+          SOLD
+        </Button>
+      </div>
+    );
+  }
+
+  const displayListings = () => {// function maps a display template to each listed item
+    return(
       <Container maxWidth="md" className={classes.cardGrid}>
         <Grid container spacing={4}>
           {listings.map(item => (
@@ -157,16 +178,12 @@ export default function ProfilePage() {
                   <Typography gutterBottom variant="h5" component="h2">
                     {item.name}
                   </Typography>
-                  <Typography>{item.description}</Typography>
-
+                  <Typography>
+                    {item.description}
+                  </Typography>
                 </CardContent>
                 <CardActions>
-                  <Button href={"/edit-page/" + item._id} size="medium" color="primary">
-                    Edit
-                  </Button>{/* axios.delete("http://localhost:4000/listings/" + item._id */}
-                  <Button size="medium" color="primary" onclick={deleteItem}>{/* fix onClick */}
-                    Delete
-                  </Button>
+                  {ListingStatus(item.sold, item._id)}
                 </CardActions>
               </Card>
             </Grid>
@@ -176,103 +193,99 @@ export default function ProfilePage() {
     )
   };
 
-  if(localStorage.getItem('auth-token') !== ""){// check if user logged in
-    if (error) {
+  if(localStorage.getItem("auth-token") !== ""){// check if user logged in
+    if(error){// handling errors
       return <div>Error: {error.message}</div>;
     }
-    else if (!isLoaded) {
+    else if(!isLoaded){// waiting for setup
       return <div>Loading...</div>;
     }
-    else {
-      return (
-        <div className={classes.root}>
-          <CssBaseline />
-          <AppBar
-            position="fixed"
-            className={clsx(classes.appBar, {
-              [classes.appBarShift]: open,
-            })}
-          >
-            <Toolbar>
-              <IconButton
+    else{// rendering main display
+      return(
+        <div>
+          <div className={classes.root}>
+            <CssBaseline/>
+            <AppBar
+            position="relative"
+            className={clsx(classes.appBar, {[classes.appBarShift]: open,})}
+            >
+              <Toolbar>
+                <IconButton
                 color="inherit"
                 aria-label="open drawer"
                 onClick={handleDrawerOpen}
                 edge="start"
                 className={clsx(classes.menuButton, open && classes.hide)}
-              >
-                <MenuIcon />
-              </IconButton>
-              <Typography variant="h6" noWrap>
-                Welcome Back {localStorage.getItem("username")}!
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          <Drawer
+                >
+                  <MenuIcon/>
+                </IconButton>
+                <Typography variant="h6" noWrap>
+                  Welcome Back {localStorage.getItem("username")}!
+                </Typography>
+              </Toolbar>
+            </AppBar>
+          </div>
+          <div>
+            <Drawer
             className={classes.drawer}
             variant="persistent"
             anchor="left"
             open={open}
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-          >
-            <div className={classes.drawerHeader}>
-              <IconButton onClick={handleDrawerClose}>
-                {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-              </IconButton>
-            </div>
-            <Divider />
-            <List>
-              {[
-                {link: 'http://localhost:3000/', text: 'Live Listings', index: 0},
-                {link: 'http://www.google.com', text: 'Sold Listings', index: 1},
-                {link: 'http://www.bestbuy.com', text: 'Order History', index: 2},
-                {link: 'http://localhost:3000/wishlist', text: 'Wishlist', index: 3},
-                {link: 'http://localhost:3000//message-page', text: 'Messages', index: 4},
-                {link: 'http://www.amazon.com', text: 'Settings', index: 5},
-              ].map((obj) => (
-                <Link href = {obj.link}>
-                  <ListItem button key={obj.text}>
-                    <ListItemIcon>
-                      {obj.index === 0 && <MoneyOffIcon/>}
-                      {obj.index === 1 && <MonetizationOnIcon/>}
-                      {obj.index === 2 && <HistoryIcon/>}
-                      {obj.index === 3 && <StarIcon/>}
-                      {obj.index === 4 && <MailIcon/>}
-                      {obj.index === 5 && <SettingsIcon/>}
-                    </ListItemIcon>
-                    <ListItemText primary={obj.text} />
-                  </ListItem>
-                </Link>
-              ))}
-            </List>
-            <Divider />
-            <List>
-              {[
-                {link: '#', text: 'Customer Support', index: 0},
-                {link: '#', text: 'Contact Email', index: 1},
-                {link: '#', text: 'Contact Number', index: 2},
-              ].map((obj) => (
-                <Link href = {obj.link}>
-                  <ListItem button key={obj.text}>
-                    <ListItemIcon>
-                      {obj.index === 0 && <ContactSupportIcon />}
-                      {obj.index === 1 && <ContactMailIcon/>}
-                      {obj.index === 2 && <ContactPhoneIcon/>}
-                    </ListItemIcon>
-                  <ListItemText primary={obj.text} />
-                  </ListItem>
-                </Link>
-              ))}
-            </List>
-          </Drawer>
-          <main
-            className={clsx(classes.content, {
-              [classes.contentShift]: open,
-            })}
-          >
-            <div className={classes.drawerHeader} />
+            classes={{paper: classes.drawerPaper,}}
+            >
+              <div className={classes.drawerHeader}>
+                <IconButton onClick={handleDrawerClose}>
+                  {theme.direction === "ltr" ? <ChevronLeftIcon/> : <ChevronRightIcon/>}
+                </IconButton>
+              </div>
+              <Divider/>
+              <List>
+                {[
+                  {link: "http://localhost:3000/live-listings", text: "Live Listings", index: 0},
+                  {link: "http://localhost:3000/sold-listings", text: "Sold Listings", index: 1},
+                  {link: "http://localhost:3000/order-history", text: "Order History", index: 2},
+                  {link: "http://localhost:3000/wishlist", text: "Wishlist", index: 3},
+                  {link: "http://localhost:3000/messages-page", text: "Messages", index: 4},
+                  {link: "http://localhost:3000/user-settings", text: "Settings", index: 5},
+                ].map((obj) => (
+                  <Link href={obj.link}>
+                    <ListItem button key={obj.text}>
+                      <ListItemIcon>
+                        {obj.index === 0 && <MoneyOffIcon/>}
+                        {obj.index === 1 && <MonetizationOnIcon/>}
+                        {obj.index === 2 && <HistoryIcon/>}
+                        {obj.index === 3 && <StarIcon/>}
+                        {obj.index === 4 && <MailIcon/>}
+                        {obj.index === 5 && <SettingsIcon/>}
+                      </ListItemIcon>
+                      <ListItemText primary={obj.text}/>
+                    </ListItem>
+                  </Link>
+                ))}
+              </List>
+              <Divider/>
+              <List>
+                {[
+                  {link: "#", text: "Customer Support", index: 0},
+                  {link: "#", text: "Contact Email", index: 1},
+                  {link: "#", text: "Contact Number", index: 2},
+                ].map((obj) => (
+                  <Link href = {obj.link}>
+                    <ListItem button key={obj.text}>
+                      <ListItemIcon>
+                        {obj.index === 0 && <ContactSupportIcon/>}
+                        {obj.index === 1 && <ContactMailIcon/>}
+                        {obj.index === 2 && <ContactPhoneIcon/>}
+                      </ListItemIcon>
+                    <ListItemText primary={obj.text}/>
+                    </ListItem>
+                  </Link>
+                ))}
+              </List>
+            </Drawer>
+          </div>
+          <main className={clsx(classes.content, {[classes.contentShift]: open,})}>
+            <div className={classes.drawerHeader}/>
             <Typography paragraph>
               {displayListings()}
             </Typography>
@@ -281,9 +294,9 @@ export default function ProfilePage() {
       );
     }
   }
-  else{// redirects to login page if not signed in
-    return (
-        <Redirect to='/login'/>
+  else{// if user isnt logged in, they get redirected to login
+    return(
+        <Redirect to="/login"/>
     );
   }
 }
