@@ -97,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SoldListings() {
+export default function WishList() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
