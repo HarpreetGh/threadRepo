@@ -182,6 +182,26 @@ router.route("/upload").post((req, res) => {
   })
 });
 
+router.route('/comment').post((req,res) => {
+const commentInfo = {
+            text: req.body.comment,
+            postedBy : req.body.userName,
+}
+
+  Listing.findOneAndUpdate (
+      {_id: req.body.listingId},
+      {$push: {comments: commentInfo}},
+      {new: true},
+      (err, result) => {
+          if (err) {
+              return res.json ({success: false, err});
+          }
+          console.log(result, "GOOD");
+          res.end();
+      });
+     
+  });
+
 module.exports = router;
 
 /*router.route("/images").post((req, res) => {

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const {ObjectId} = mongoose.Schema.Types
 
 const Schema = mongoose.Schema;
 
@@ -43,7 +44,8 @@ const listingSchema = new Schema({
         type: Number, 
         required: true,
         min: 0,
-        default: 0
+        default: 0,
+        max: 100000
     },
     likes: {  // The price of the listing
         type: Number,
@@ -60,6 +62,10 @@ const listingSchema = new Schema({
         type: String,
         required: true,
     },
+    comments: [{
+        text: String,
+        postedBy: String
+    }]
 
 },  {
     timestamps: true,
