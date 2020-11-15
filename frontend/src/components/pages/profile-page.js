@@ -229,7 +229,7 @@ export default function ProfilePage() {
                 {link: 'http://www.google.com', text: 'Sold Listings', index: 1},
                 {link: 'http://www.bestbuy.com', text: 'Order History', index: 2},
                 {link: 'http://localhost:3000/wishlist', text: 'Wishlist', index: 3},
-                {link: 'http://localhost:3000//message-page', text: 'Messages', index: 4},
+                {link: 'http://localhost:3000/message-page', text: 'Messages', index: 4},
                 {link: 'http://www.amazon.com', text: 'Settings', index: 5},
               ].map((obj) => (
                 <Link href = {obj.link}>
