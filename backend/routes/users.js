@@ -201,6 +201,15 @@ router.route('/update/:id').post((req, res) => {
         );
 });
 
+router.route('/history/:id').get((req, res) => {
+    User.findById(req.params.id)
+        .then(users => {res.json(users.history)
+            console.log("user history is:")
+            console.log(users.history)
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
+});
+
 router.route('/wishlist/:id').get((req, res) => {
     User.findById(req.params.id)
         .then(users => {res.json(users.wishlist)

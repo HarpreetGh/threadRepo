@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';// used to redirect user if not logged in
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import axios from 'axios';
 import {
@@ -98,13 +98,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ProfilePage() {
+export default function UserSettings() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [listings, setListings] = useState([]);
   
   const handleDrawerOpen = () => {// function opens the side drawer
     setOpen(true);
@@ -114,84 +113,16 @@ export default function ProfilePage() {
     setOpen(false);
   };
 
-  useEffect(() => {// function gets all the listings for the user (live & sold)
+  useEffect(() => {// gets all the info of the user
     axios.post("http://localhost:4000/listings/filter", {username: localStorage.getItem("username")})
       .then(response => {
         setIsLoaded(true);
-        setListings([]);
-        setListings(response.data);
       },
       (error) => {
         setIsLoaded(true);
         setError(error);
       });
   }, [])
-
-  function deleteItem(){// function deletes an individual item
-      console.log("you are trying to delete item#: ")
-      /*
-    axios.delete("http://localhost:4000/listings/" + itemID)
-      .then(response => {
-        setReply(response.data);
-      },
-      (error) => {
-        setError(error);
-      }
-    );
-    */
-  }
-
-  function ListingStatus(bVal, tID){// function verifies if item is sold or not, then gives the necessary button uses
-    if(!bVal)
-      return(
-        <div>
-          <Button href={"/edit-page/" + tID} size="medium" color="primary">
-            EDIT
-          </Button>
-          <Button size="medium" color="primary" onclick={deleteItem}>
-            DELETE
-          </Button>
-        </div>
-      );
-    else return(
-      <div>
-        <Button href={"/listings/" + tID} size="medium" color="secondary">
-          SOLD
-        </Button>
-      </div>
-    );
-  }
-
-  const displayListings = () => {// function maps a display template to each listed item
-    return(
-      <Container maxWidth="md" className={classes.cardGrid}>
-        <Grid container spacing={4}>
-          {listings.map(item => (
-            <Grid item key={listings} xs={12} sm={6} md={4}>
-              <Card className={classes.card}>
-                <CardMedia
-                  className={classes.cardMedia}
-                  image={item.image}
-                  title="Image title"
-                />
-                <CardContent className={classes.cardContent}>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    {item.name}
-                  </Typography>
-                  <Typography>
-                    {item.description}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  {ListingStatus(item.sold, item._id)}
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-    )
-  };
 
   if(localStorage.getItem("auth-token") !== ""){// check if user logged in
     if(error){// handling errors
@@ -204,7 +135,7 @@ export default function ProfilePage() {
       return(
         <div>
           <div className={classes.root}>
-            <CssBaseline/>
+            <CssBaseline />
             <AppBar
             position="relative"
             className={clsx(classes.appBar, {[classes.appBarShift]: open,})}
@@ -220,7 +151,7 @@ export default function ProfilePage() {
                   <MenuIcon/>
                 </IconButton>
                 <Typography variant="h6" noWrap>
-                  Welcome Back {localStorage.getItem("username")}!
+                  {localStorage.getItem("username")}'s SETTINGS!
                 </Typography>
               </Toolbar>
             </AppBar>
@@ -246,9 +177,9 @@ export default function ProfilePage() {
                   {link: "http://localhost:3000/order-history", text: "Order History", index: 2},
                   {link: "http://localhost:3000/wishlist", text: "Wishlist", index: 3},
                   {link: "http://localhost:3000/messages-page", text: "Messages", index: 4},
-                  {link: "http://localhost:3000/user-settings", text: "Settings", index: 5},
+                  {link: "#", text: "Settings", index: 5},
                 ].map((obj) => (
-                  <Link href={obj.link}>
+                  <Link href = {obj.link}>
                     <ListItem button key={obj.text}>
                       <ListItemIcon>
                         {obj.index === 0 && <MoneyOffIcon/>}
@@ -266,11 +197,11 @@ export default function ProfilePage() {
               <Divider/>
               <List>
                 {[
-                  {link: "#", text: "Customer Support", index: 0},
-                  {link: "#", text: "Contact Email", index: 1},
-                  {link: "#", text: "Contact Number", index: 2},
+                  {link: '#', text: 'Customer Support', index: 0},
+                  {link: '#', text: 'Contact Email', index: 1},
+                  {link: '#', text: 'Contact Number', index: 2},
                 ].map((obj) => (
-                  <Link href = {obj.link}>
+                  <Link href={obj.link}>
                     <ListItem button key={obj.text}>
                       <ListItemIcon>
                         {obj.index === 0 && <ContactSupportIcon/>}
@@ -285,16 +216,13 @@ export default function ProfilePage() {
             </Drawer>
           </div>
           <main className={clsx(classes.content, {[classes.contentShift]: open,})}>
-            <div className={classes.drawerHeader}/>
-            <Typography paragraph>
-              {displayListings()}
-            </Typography>
+            <div>USER SETTINGS</div>
           </main>
         </div>
       );
     }
   }
-  else{// if user isnt logged in, they get redirected to login
+  else{// redirects to login page if not signed in
     return(
         <Redirect to="/login"/>
     );

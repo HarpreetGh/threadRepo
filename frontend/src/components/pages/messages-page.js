@@ -21,6 +21,7 @@ import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
 
 const drawerWidth = 240;
 
@@ -98,13 +99,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ProfilePage() {
+export default function MessagePage() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [listings, setListings] = useState([]);
   
   const handleDrawerOpen = () => {// function opens the side drawer
     setOpen(true);
@@ -114,84 +114,16 @@ export default function ProfilePage() {
     setOpen(false);
   };
 
-  useEffect(() => {// function gets all the listings for the user (live & sold)
+  useEffect(() => {// function gets messages of the user
     axios.post("http://localhost:4000/listings/filter", {username: localStorage.getItem("username")})
       .then(response => {
         setIsLoaded(true);
-        setListings([]);
-        setListings(response.data);
       },
       (error) => {
         setIsLoaded(true);
         setError(error);
       });
   }, [])
-
-  function deleteItem(){// function deletes an individual item
-      console.log("you are trying to delete item#: ")
-      /*
-    axios.delete("http://localhost:4000/listings/" + itemID)
-      .then(response => {
-        setReply(response.data);
-      },
-      (error) => {
-        setError(error);
-      }
-    );
-    */
-  }
-
-  function ListingStatus(bVal, tID){// function verifies if item is sold or not, then gives the necessary button uses
-    if(!bVal)
-      return(
-        <div>
-          <Button href={"/edit-page/" + tID} size="medium" color="primary">
-            EDIT
-          </Button>
-          <Button size="medium" color="primary" onclick={deleteItem}>
-            DELETE
-          </Button>
-        </div>
-      );
-    else return(
-      <div>
-        <Button href={"/listings/" + tID} size="medium" color="secondary">
-          SOLD
-        </Button>
-      </div>
-    );
-  }
-
-  const displayListings = () => {// function maps a display template to each listed item
-    return(
-      <Container maxWidth="md" className={classes.cardGrid}>
-        <Grid container spacing={4}>
-          {listings.map(item => (
-            <Grid item key={listings} xs={12} sm={6} md={4}>
-              <Card className={classes.card}>
-                <CardMedia
-                  className={classes.cardMedia}
-                  image={item.image}
-                  title="Image title"
-                />
-                <CardContent className={classes.cardContent}>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    {item.name}
-                  </Typography>
-                  <Typography>
-                    {item.description}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  {ListingStatus(item.sold, item._id)}
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-    )
-  };
 
   if(localStorage.getItem("auth-token") !== ""){// check if user logged in
     if(error){// handling errors
@@ -206,8 +138,8 @@ export default function ProfilePage() {
           <div className={classes.root}>
             <CssBaseline/>
             <AppBar
-            position="relative"
-            className={clsx(classes.appBar, {[classes.appBarShift]: open,})}
+              position="relative"
+              className={clsx(classes.appBar, {[classes.appBarShift]: open,})}
             >
               <Toolbar>
                 <IconButton
@@ -220,7 +152,7 @@ export default function ProfilePage() {
                   <MenuIcon/>
                 </IconButton>
                 <Typography variant="h6" noWrap>
-                  Welcome Back {localStorage.getItem("username")}!
+                  {localStorage.getItem("username")}'s MESSAGES!
                 </Typography>
               </Toolbar>
             </AppBar>
@@ -245,7 +177,7 @@ export default function ProfilePage() {
                   {link: "http://localhost:3000/sold-listings", text: "Sold Listings", index: 1},
                   {link: "http://localhost:3000/order-history", text: "Order History", index: 2},
                   {link: "http://localhost:3000/wishlist", text: "Wishlist", index: 3},
-                  {link: "http://localhost:3000/messages-page", text: "Messages", index: 4},
+                  {link: "#", text: "Messages", index: 4},
                   {link: "http://localhost:3000/user-settings", text: "Settings", index: 5},
                 ].map((obj) => (
                   <Link href={obj.link}>
@@ -265,19 +197,41 @@ export default function ProfilePage() {
               </List>
               <Divider/>
               <List>
+                {["Inbox", "Started", "Sent Emails", "Drafts"].map((text, index) => (
+                  <ListItem button key={text}>
+                    <ListItemIcon>
+                      {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
+                    </ListItemIcon>
+                    <ListItemText primary={text}/>
+                  </ListItem>
+                ))}
+              </List>
+            <Divider/>
+            <List>
+              {["All mail", "Trash", "Spam"].map((text, index) => (
+                <ListItem button key={text}>
+                  <ListItemIcon>
+                    {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
+                  </ListItemIcon>
+                  <ListItemText primary={text} />
+                </ListItem>
+              ))}
+            </List>
+            <Divider/>
+              <List>
                 {[
                   {link: "#", text: "Customer Support", index: 0},
                   {link: "#", text: "Contact Email", index: 1},
                   {link: "#", text: "Contact Number", index: 2},
                 ].map((obj) => (
-                  <Link href = {obj.link}>
+                  <Link href={obj.link}>
                     <ListItem button key={obj.text}>
                       <ListItemIcon>
                         {obj.index === 0 && <ContactSupportIcon/>}
                         {obj.index === 1 && <ContactMailIcon/>}
                         {obj.index === 2 && <ContactPhoneIcon/>}
                       </ListItemIcon>
-                    <ListItemText primary={obj.text}/>
+                      <ListItemText primary={obj.text}/>
                     </ListItem>
                   </Link>
                 ))}
@@ -286,15 +240,24 @@ export default function ProfilePage() {
           </div>
           <main className={clsx(classes.content, {[classes.contentShift]: open,})}>
             <div className={classes.drawerHeader}/>
-            <Typography paragraph>
-              {displayListings()}
-            </Typography>
+              <Typography paragraph>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                ut labo re et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
+                facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
+                gravida rutrum quisque non tellus. Convallis convallis tellus id interdum velit laoreet id
+                donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
+                adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra nibh cras.
+                Metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo quis
+                imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
+                arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
+                donec massa sapien faucibus et molestie ac.
+              </Typography>
           </main>
         </div>
       );
     }
   }
-  else{// if user isnt logged in, they get redirected to login
+  else{// redirects to login page if not signed in
     return(
         <Redirect to="/login"/>
     );

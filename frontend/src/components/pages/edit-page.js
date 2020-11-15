@@ -1,70 +1,62 @@
 import React, {useEffect, useState} from "react";
 import {
     Button, CssBaseline, Grid, TextField, Select,
-    MenuItem
+    MenuItem, FormControl, Typography, Container,
+    OutlinedInput, InputAdornment, InputLabel
 }
 from "@material-ui/core";
 import { Redirect } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
-import { Row, Col } from "reactstrap";
-import ImageGallery from "react-image-gallery";
 import axios from 'axios';
 import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   title: {
-    // title of product
     display: "flex",
     justifyContent: "center",
   },
-  rLayout: {
-    // custom portion for entire product
-    display: "flex",
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 150,
   },
-  c1Layout: {
-    // custom portion for images
-    lg: 12,
-    xs: 24,
-    width: "40%",
-    height: 550,
+  fileInput: {
+    borderBottom: "4px solid lightgray",
+    borderRight: "4px solid lightgray",
+    borderTop: "1px solid black",
+    borderLeft: "1px solid black",
+    padding: "10px",
+    margin: "15px",
+    cursor: "pointer",
   },
-  c2Layout: {
-    // custom portion for details
-    lg: 12,
-    xs: 24,
-    width: "60%",
-    height: 550,
+  imgPreview: {
+      textAlign: "center",
+      margin: "5px 15px",
+      height: "300px",
+      width: "500px",
+      borderLeft: "1px solid gray",
+      borderRight: "1px solid gray",
+      borderTop: "5px solid gray",
+      borderBottom: "5px solid gray",
   },
-  footer: {
-    // custom footer
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(6),
+  img:{
+    width:"100%",
+    height:"100%",
   },
 }));
 
 export default function EditPage(){
     const [itemName, setItemName] = useState("");
     const [description, setDescription] = useState("");
-    const [garmentType, setGarmentType] = useState("");//not used yet
+    const [garmentType, setGarmentType] = useState("");
     const [size, setSize] = useState("");
     const [color, setColor] = useState("");
     const [condition, setCondition] = useState("");
     const [price, setPrice] = useState("");
     const [image, setImage] = useState("");
-    const [url,setUrl] = useState("");
+    const [url, setUrl] = useState("");
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
-    const [listing, setListing] = useState({});// current listing
     const classes = useStyles();
-
-    const images = [// array holding item images
-        {
-          original:
-            listing.image,
-          thumbnail:
-            listing.image,
-        },
-    ];
 
     const Filters = {
         garment: ["Upper Thread", "Lower Thread", "Footwear"],
@@ -77,12 +69,20 @@ export default function EditPage(){
         ]
     }
 
-    let { id } = useParams(); //url 
+    let { id } = useParams();
     useEffect(() => {// get info for current listing
         axios.get('http://localhost:4000/listings/' + id)
             .then(response => {
             setIsLoaded(true);
-            setListing(response.data)
+            setItemName(response.data.name)// initialize default values for updated version here
+            setDescription(response.data.description)
+            setGarmentType(response.data.category)
+            setSize(response.data.size)
+            setColor(response.data.color)
+            setCondition(response.data.condition)
+            setPrice(response.data.price)
+            setImage(response.data.image)
+            setUrl(response.data.image)// response.data.url is undefined?
         },
         (error) => {
             setIsLoaded(true);
@@ -123,23 +123,15 @@ export default function EditPage(){
                 price: price,
                 image: url,
             };
-        console.log("the current listing is:");
-        console.log(listing);
-        console.log("the updated listing is:");
-        console.log(updatedListing);
 
-        // if all variables will need to be updated then place condition checking here
-
-        // make axios call here
         axios.post("http://localhost:4000/listings/update/" + id, updatedListing)
             .then(response => {
-                console.log("response from backend is ");
-                console.log(response);
-                //window.location.href = "http://localhost:3000/listings/" + id;// take user to display of newly updated listing
+                //window.location = "http://localhost:3000/listings/" + id;//OR response.data;
+                //line above should work once the issues with multiple clicks needed for images is fixed
             });
         }
         catch(err){
-            setError("bad");
+            console.log("Error: " + err);
         }
     };
 
@@ -152,145 +144,157 @@ export default function EditPage(){
         }
         else{
             return (
-                <React.Fragment>
+                <Container component="main" maxWidth="lg">
                     <CssBaseline />
-                    <div className={classes.title}>
-                        <h1>Update Listing: {listing.name}</h1>
+                    <div>
+                        <Typography component="h1" variant="h5" className={classes.title}>
+                            Edit Listing
+                        </Typography>
+                        <form onSubmit={onSubmit}>
+                            <div className={classes.imgPreview}>
+                                <img className={classes.img} src={url} alt={url}/>
+                            </div>
+                            <input
+                            className={classes.fileInput}
+                            type="file"
+                            onChange={(e)=>setImage(e.target.files[0])}
+                            />{/* Item image upload */}
+                            <Grid className={classes.formControl}>{/* Item name */}
+                                <TextField
+                                name="name"
+                                variant="outlined"
+                                type="text"
+                                required
+                                value={itemName}
+                                onChange={(e) => setItemName(e.target.value)}
+                                fullWidth
+                                id="name"
+                                label="Name"
+                                />
+                            </Grid>
+                            <div className={classes.title}>
+                                <FormControl variant="outlined" className={classes.formControl}>{/* Item garment type */}
+                                    <InputLabel>Garment Type</InputLabel>
+                                    <Select
+                                    required
+                                    labelId="garment"
+                                    id="garment"
+                                    value={garmentType}
+                                    onChange={(e) => setGarmentType(e.target.value)}
+                                    label="Garment Type"
+                                    >
+                                        {Filters.garment.map((garments) => (
+                                            <MenuItem key={garments} value={garments}>
+                                                {garments}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                                <FormControl variant="outlined" className={classes.formControl}>{/* Item size */}
+                                    <InputLabel>Size</InputLabel>
+                                    <Select
+                                    required
+                                    children
+                                    labelId="size"
+                                    id="size"
+                                    value={size}
+                                    onChange={(e) => setSize(e.target.value)}
+                                    label="Size"
+                                    >
+                                        {garmentType === "Footwear" ? (
+                                            Filters.shoeSizes.map((sizes) => (
+                                                <MenuItem key={sizes} value={sizes}>
+                                                    {sizes}
+                                                </MenuItem>
+                                            ))
+                                        ) : (
+                                            Filters.garmentSizes.map((sizes) => (
+                                                <MenuItem key={sizes} value={sizes}>
+                                                    {sizes}
+                                                </MenuItem>
+                                            ))
+                                        )}
+                                    </Select>
+                                </FormControl>
+                                <FormControl variant="outlined" className={classes.formControl}>{/* Item color */}
+                                    <InputLabel>Color</InputLabel>
+                                    <Select
+                                    required
+                                    labelId="color"
+                                    id="color"
+                                    value={color}
+                                    onChange={(e) => setColor(e.target.value)}
+                                    label="Color"
+                                    >
+                                        {Filters.colors.map((colors) => (
+                                            <MenuItem key={colors} value={colors}>
+                                                {colors}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                                <FormControl variant="outlined" className={classes.formControl}>{/* Item condition */}
+                                    <InputLabel>Condition</InputLabel>
+                                    <Select //Color
+                                    required
+                                    labelId="condition"//Condition
+                                    id="condition"//Condition
+                                    value={condition}
+                                    onChange={(e) => setCondition(e.target.value)}
+                                    label="Condition"
+                                    >
+                                        {Filters.conditions.map((conditions) => (
+                                            <MenuItem key={conditions} value={conditions}>
+                                                {conditions}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                                <FormControl className={classes.formControl} variant="outlined">{/* Item price */}
+                                    <InputLabel>Price</InputLabel>
+                                    <OutlinedInput
+                                    required
+                                    type="number"
+                                    value={price}
+                                    onChange={(e) => setPrice(e.target.value)}
+                                    startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                                    label="Price"
+                                    />
+                                </FormControl>
+                            </div>
+                            <Grid>{/* Item description */}
+                                <TextField
+                                name="description"
+                                variant="outlined"
+                                type="text"
+                                required
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                fullWidth
+                                multiline
+                                rows={4}
+                                id="description"
+                                label="Description"
+                                />
+                            </Grid>
+                            <Button
+                            onSubmit={onSubmit}
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            value="Update"//Create
+                            onClick={()=>updateDetails()}
+                            >Update</Button>
+                        </form>
                     </div>
-                    <form onSubmit={onSubmit}>
-                    <input type="file" onChange={(e)=>setImage(e.target.files[0])} />
-                        <Grid>
-                            <Row className={classes.rLayout}>
-                                <Col className={classes.c1Layout}>
-                                    <ImageGallery showPlayButton={false} items={images} />
-                                </Col>
-                                <Col className={classes.c2Layout}>
-                                    <div style={{ padding: 10 }}>{/* Name column */}
-                                        <TextField
-                                            name="name"
-                                            variant="outlined"
-                                            type="text"
-                                            required
-                                            value={itemName}
-                                            onChange={(e) => setItemName(e.target.value)}
-                                            fullWidth
-                                            id="name"
-                                            label={listing.name}
-                                        />
-                                    </div>
-                                    <div style={{ padding: 5 }}>
-                                        Rating: {listing.likes} Likes
-                                    </div><hr />
-                                    <div style={{ padding: 10 }}>{/* Description column */}
-                                        <TextField
-                                            name="description"
-                                            variant="outlined"
-                                            type="text"
-                                            required
-                                            value={description}
-                                            onChange={(e) => setDescription(e.target.value)}
-                                            fullWidth
-                                            multiline
-                                            rows={4}
-                                            id="description"
-                                            label="Description"
-                                        /><br />
-                                    </div><hr />
-                                    <div>
-                                        <Row style={{ padding: 10 }}>
-                                            <Col>{/* Price column */}
-                                                <TextField
-                                                    name="price"
-                                                    variant="outlined"
-                                                    type="number"
-                                                    required
-                                                    value={price}
-                                                    onChange={(e) => setPrice(e.target.value)}
-                                                    fullWidth
-                                                    id="price"
-                                                    label="Price"
-                                                />
-                                            </Col>
-                                            <Col>{/* Color column */}
-                                                Color: 
-                                                <Select //Color
-                                                labelId="color"
-                                                id="color"
-                                                value={color}
-                                                onChange={(e) => setColor(e.target.value)}
-                                                >
-                                                {Filters.colors.map((colors) => (
-                                                    <MenuItem key={colors} value={colors}>
-                                                        {colors}
-                                                    </MenuItem>
-                                                ))}
-                                                </Select>
-                                            </Col>
-                                            <Col>{/* Size column */}
-                                                Size: 
-                                                <Select
-                                                children
-                                                labelId="size"
-                                                id="size"
-                                                value={size}
-                                                onChange={(e) => setSize(e.target.value)}
-                                                >
-                                                    {garmentType === "Footwear" ? (
-                                                        Filters.shoeSizes.map((sizes) => (
-                                                            <MenuItem key={sizes} value={sizes}>
-                                                                {sizes}
-                                                            </MenuItem>
-                                                        ))) : (
-                                                        Filters.garmentSizes.map((sizes) => (
-                                                            <MenuItem key={sizes} value={sizes}>
-                                                                {sizes}
-                                                            </MenuItem>
-                                                        )))
-                                                    }
-                                                </Select>
-                                            </Col>
-                                            <Col>{/* condition column */}
-                                                Condition: 
-                                                <Select
-                                                labelId="Condition"
-                                                id="Condition"
-                                                value={condition}
-                                                onChange={(e) => setCondition(e.target.value)}
-                                                >
-                                                    {Filters.conditions.map((conditions) => (
-                                                        <MenuItem key={conditions} value={conditions}>
-                                                            {conditions}
-                                                        </MenuItem>
-                                                    ))}
-                                                </Select>
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            aaa
-                                        </Row>
-                                    </div>
-                                </Col>
-                            </Row>
-                        </Grid>
-                        <Button
-                        onSubmit={onSubmit}
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        value="Update"
-                        onClick={()=>updateDetails()}
-                        >
-                            Update Item
-                        </Button>
-                    </form>
-                </React.Fragment>
+                </Container>
             );
         }
     }
     else{
         return (
-            <Redirect to='/login' />
+            <Redirect to='/login'/>
         );
     }
 };

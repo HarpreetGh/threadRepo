@@ -98,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ProfilePage() {
+export default function SoldListings() {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -114,8 +114,8 @@ export default function ProfilePage() {
     setOpen(false);
   };
 
-  useEffect(() => {// function gets all the listings for the user (live & sold)
-    axios.post("http://localhost:4000/listings/filter", {username: localStorage.getItem("username")})
+  useEffect(() => {// function gets all the listings for the user (sold only)
+    axios.post("http://localhost:4000/listings/filter", {username: localStorage.getItem("username"), sold:true})
       .then(response => {
         setIsLoaded(true);
         setListings([]);
@@ -126,41 +126,6 @@ export default function ProfilePage() {
         setError(error);
       });
   }, [])
-
-  function deleteItem(){// function deletes an individual item
-      console.log("you are trying to delete item#: ")
-      /*
-    axios.delete("http://localhost:4000/listings/" + itemID)
-      .then(response => {
-        setReply(response.data);
-      },
-      (error) => {
-        setError(error);
-      }
-    );
-    */
-  }
-
-  function ListingStatus(bVal, tID){// function verifies if item is sold or not, then gives the necessary button uses
-    if(!bVal)
-      return(
-        <div>
-          <Button href={"/edit-page/" + tID} size="medium" color="primary">
-            EDIT
-          </Button>
-          <Button size="medium" color="primary" onclick={deleteItem}>
-            DELETE
-          </Button>
-        </div>
-      );
-    else return(
-      <div>
-        <Button href={"/listings/" + tID} size="medium" color="secondary">
-          SOLD
-        </Button>
-      </div>
-    );
-  }
 
   const displayListings = () => {// function maps a display template to each listed item
     return(
@@ -183,7 +148,9 @@ export default function ProfilePage() {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  {ListingStatus(item.sold, item._id)}
+                  <Button href={"/listings/" + item._id} size="medium" color="secondary">
+                    SOLD
+                  </Button>
                 </CardActions>
               </Card>
             </Grid>
@@ -206,8 +173,8 @@ export default function ProfilePage() {
           <div className={classes.root}>
             <CssBaseline/>
             <AppBar
-            position="relative"
-            className={clsx(classes.appBar, {[classes.appBarShift]: open,})}
+              position="relative"
+              className={clsx(classes.appBar, {[classes.appBarShift]: open,})}
             >
               <Toolbar>
                 <IconButton
@@ -220,7 +187,7 @@ export default function ProfilePage() {
                   <MenuIcon/>
                 </IconButton>
                 <Typography variant="h6" noWrap>
-                  Welcome Back {localStorage.getItem("username")}!
+                  {localStorage.getItem("username")}'s SOLD Items!
                 </Typography>
               </Toolbar>
             </AppBar>
@@ -242,7 +209,7 @@ export default function ProfilePage() {
               <List>
                 {[
                   {link: "http://localhost:3000/live-listings", text: "Live Listings", index: 0},
-                  {link: "http://localhost:3000/sold-listings", text: "Sold Listings", index: 1},
+                  {link: "#", text: "Sold Listings", index: 1},
                   {link: "http://localhost:3000/order-history", text: "Order History", index: 2},
                   {link: "http://localhost:3000/wishlist", text: "Wishlist", index: 3},
                   {link: "http://localhost:3000/messages-page", text: "Messages", index: 4},
@@ -270,14 +237,14 @@ export default function ProfilePage() {
                   {link: "#", text: "Contact Email", index: 1},
                   {link: "#", text: "Contact Number", index: 2},
                 ].map((obj) => (
-                  <Link href = {obj.link}>
+                  <Link href={obj.link}>
                     <ListItem button key={obj.text}>
                       <ListItemIcon>
                         {obj.index === 0 && <ContactSupportIcon/>}
                         {obj.index === 1 && <ContactMailIcon/>}
                         {obj.index === 2 && <ContactPhoneIcon/>}
                       </ListItemIcon>
-                    <ListItemText primary={obj.text}/>
+                      <ListItemText primary={obj.text}/>
                     </ListItem>
                   </Link>
                 ))}
@@ -294,7 +261,7 @@ export default function ProfilePage() {
       );
     }
   }
-  else{// if user isnt logged in, they get redirected to login
+  else{// redirects to login page if not signed in
     return(
         <Redirect to="/login"/>
     );
