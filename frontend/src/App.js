@@ -91,7 +91,7 @@ export default function App() {
               <Route path="/sold-listings" exact component={SoldListings} />
               <Route path="/order-history" exact component={OrderHistory} />
               <Route path="/user-settings" exact component={UserSettings} />
-              <Route path="/messages-page" exact component={MessagesPage} />
+              <Route path="/messages-page/:username" exact component={MessagesPage} />
             </Switch>
           </div>
         

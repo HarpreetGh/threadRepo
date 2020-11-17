@@ -26,6 +26,10 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
+  tDisplay: {
+    fontSize: 15,
+    margin: 15,
+  },
   cardGrid: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),
@@ -206,34 +210,37 @@ export default function MessagePage() {
                   </ListItem>
                 ))}
               </List>
-            <Divider/>
-            <List>
-              {["All mail", "Trash", "Spam"].map((text, index) => (
-                <ListItem button key={text}>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItem>
-              ))}
-            </List>
-            <Divider/>
+              <Divider/>
+              <List>
+                {["All mail", "Trash", "Spam"].map((text, index) => (
+                  <ListItem button key={text}>
+                    <ListItemIcon>
+                      {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
+                    </ListItemIcon>
+                    <ListItemText primary={text} />
+                  </ListItem>
+                ))}
+              </List>
+              <Divider/>
               <List>
                 {[
-                  {link: "#", text: "Customer Support", index: 0},
-                  {link: "#", text: "Contact Email", index: 1},
-                  {link: "#", text: "Contact Number", index: 2},
+                  {link: "#", text: "Customer Support", index: 0, text2: "Questions & Answers"},// would go to a page that displays common questions and solutions
+                  {link: null, text: "Contact Email", index: 1, text2: "support@gmail.com"},
+                  {link: null, text: "Contact Number", index: 2, text2: "(559)695-8008"},
                 ].map((obj) => (
-                  <Link href={obj.link}>
+                  <div>
+                  <Link href = {obj.link}>
                     <ListItem button key={obj.text}>
                       <ListItemIcon>
                         {obj.index === 0 && <ContactSupportIcon/>}
                         {obj.index === 1 && <ContactMailIcon/>}
                         {obj.index === 2 && <ContactPhoneIcon/>}
                       </ListItemIcon>
-                      <ListItemText primary={obj.text}/>
+                    <ListItemText primary={obj.text}/>
                     </ListItem>
                   </Link>
+                  <p className={classes.tDisplay}>{obj.text2}</p>
+                  </div>
                 ))}
               </List>
             </Drawer>

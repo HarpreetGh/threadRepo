@@ -26,6 +26,10 @@ import Album from "./Show-Listings"
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
+  tDisplay: {
+    fontSize: 15,
+    margin: 15,
+  },
   cardGrid: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),
@@ -128,7 +132,7 @@ export default function OrderHistory() {
           setError(error);
       });
   }, [])
-  console.log('1: ', listings[0])//{dateOfPurchase: 1605224721083, name: "IS Jacket", id: "5fab216a35ed6f157c18dd03", price: 200}
+  console.log('First item is: ', listings)//{dateOfPurchase: 1605224721083, name: "IS Jacket", id: "5fab216a35ed6f157c18dd03", price: 200}
   //why isn't "listings[0].id" valid?
   //console.log("data is now: ", listings);
 
@@ -217,7 +221,7 @@ export default function OrderHistory() {
                   {link: "http://localhost:3000/sold-listings", text: "Sold Listings", index: 1},
                   {link: "#", text: "Order History", index: 2},
                   {link: "http://localhost:3000/wishlist", text: "Wishlist", index: 3},
-                  {link: "http://localhost:3000//message-page", text: "Messages", index: 4},
+                  {link: "http://localhost:3000/messages-page/"+localStorage.getItem("username"), text: "Messages", index: 4},
                   {link: "http://localhost:3000/user-settings", text: "Settings", index: 5},
                 ].map((obj) => (
                   <Link href={obj.link}>
@@ -238,11 +242,12 @@ export default function OrderHistory() {
               <Divider/>
               <List>
                 {[
-                  {link: '#', text: 'Customer Support', index: 0},
-                  {link: '#', text: 'Contact Email', index: 1},
-                  {link: '#', text: 'Contact Number', index: 2},
+                  {link: "#", text: "Customer Support", index: 0, text2: "Questions & Answers"},// would go to a page that displays common questions and solutions
+                  {link: null, text: "Contact Email", index: 1, text2: "support@gmail.com"},
+                  {link: null, text: "Contact Number", index: 2, text2: "(559)695-8008"},
                 ].map((obj) => (
-                  <Link href={obj.link}>
+                  <div>
+                  <Link href = {obj.link}>
                     <ListItem button key={obj.text}>
                       <ListItemIcon>
                         {obj.index === 0 && <ContactSupportIcon/>}
@@ -252,6 +257,8 @@ export default function OrderHistory() {
                     <ListItemText primary={obj.text}/>
                     </ListItem>
                   </Link>
+                  <p className={classes.tDisplay}>{obj.text2}</p>
+                  </div>
                 ))}
               </List>
             </Drawer>

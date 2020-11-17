@@ -99,7 +99,10 @@ router.route('/login').post((req, res) => {
                             id: user._id,
                             displayName: user.username,
                             email: user.email,
-                            wishlist: user.wishlist
+                            wishlist: user.wishlist,
+                            firstname: user.firstname,
+                            lastname: user.lastname,
+                            password: user.password,
                         },
                     });
                 }
@@ -173,33 +176,35 @@ router.route('/update/:id').post((req, res) => {
         .catch(err => res.status(400).json('Error: ' + err)); 
 });
 */
+
+ //or use this
+    //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
+    //input format 
+    // ex1: {username: "whateverNewName", wishlists: ["", "1010101101", "12321"]}
+    
+    /*
+    var updates = {};
+    Object.keys(req.body).map((update) => (
+        updates[update]= req.body[update])
+    )
+    */
 router.route('/update/:id').post((req, res) => {
-        //or use this
-        //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
-        //input format 
-        // ex1: {username: "whateverNewName", wishlists: ["", "1010101101", "12321"]}
-        
-        /*
-        var updates = {};
-        Object.keys(req.body).map((update) => (
-            updates[update]= req.body[update])
-        )
-        */
-       
+    bcrypt.hash(req.body.password, saltLength, function (err, hash){
         User.updateOne(
-            { _id: req.params.id },
-            //updates,
-            req.body,
-            { new: true },
-            (err, user) => {
-                if (err) {
-                    return res.json({ success: false, err });
-                }
-                console.log(user);
-                res.end();
+        { _id: req.params.id },
+        //updates,
+        req.body,
+        { new: true },
+        (err, user) => {
+            if (err) {
+                return res.json({ success: false, err });
             }
-        );
-});
+            console.log(user);
+            res.end();
+        }
+    );
+    }
+)});
 
 router.route('/history/:id').get((req, res) => {
     User.findById(req.params.id)

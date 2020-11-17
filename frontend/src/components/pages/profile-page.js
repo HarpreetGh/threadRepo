@@ -25,6 +25,15 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
+  tDisplay: {
+    fontSize: 15,
+    margin: 15,
+  },
+  nDisplay: {
+    fontSize: 15,
+    display: "inline",
+    margin: 10,
+  },
   cardGrid: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),
@@ -141,14 +150,14 @@ export default function ProfilePage() {
     */
   }
 
-  function ListingStatus(bVal, tID){// function verifies if item is sold or not, then gives the necessary button uses
-    if(!bVal)
+  function ListingStatus(sVal, tID){// function verifies if item is sold or not, then gives the necessary button uses
+    if(!sVal)
       return(
         <div>
           <Button href={"/edit-page/" + tID} size="medium" color="primary">
             EDIT
           </Button>
-          <Button size="medium" color="primary" onclick={deleteItem}>
+          <Button size="medium" color="primary" onclick={console.log(tID)}>
             DELETE
           </Button>
         </div>
@@ -221,6 +230,9 @@ export default function ProfilePage() {
                 </IconButton>
                 <Typography variant="h6" noWrap>
                   Welcome Back {localStorage.getItem("username")}!
+                  <Typography className={classes.nDisplay}>
+                    ({localStorage.getItem("firstname")} {localStorage.getItem("lastname")})
+                  </Typography>
                 </Typography>
               </Toolbar>
             </AppBar>
@@ -245,7 +257,7 @@ export default function ProfilePage() {
                   {link: "http://localhost:3000/sold-listings", text: "Sold Listings", index: 1},
                   {link: "http://localhost:3000/order-history", text: "Order History", index: 2},
                   {link: "http://localhost:3000/wishlist", text: "Wishlist", index: 3},
-                  {link: "http://localhost:3000/messages-page", text: "Messages", index: 4},
+                  {link: "http://localhost:3000/messages-page/"+localStorage.getItem("username"), text: "Messages", index: 4},
                   {link: "http://localhost:3000/user-settings", text: "Settings", index: 5},
                 ].map((obj) => (
                   <Link href={obj.link}>
@@ -266,10 +278,11 @@ export default function ProfilePage() {
               <Divider/>
               <List>
                 {[
-                  {link: "#", text: "Customer Support", index: 0},
-                  {link: "#", text: "Contact Email", index: 1},
-                  {link: "#", text: "Contact Number", index: 2},
+                  {link: "#", text: "Customer Support", index: 0, text2: "Questions & Answers"},// would go to a page that displays common questions and solutions
+                  {link: null, text: "Contact Email", index: 1, text2: "support@gmail.com"},
+                  {link: null, text: "Contact Number", index: 2, text2: "(559)695-8008"},
                 ].map((obj) => (
+                  <div>
                   <Link href = {obj.link}>
                     <ListItem button key={obj.text}>
                       <ListItemIcon>
@@ -280,6 +293,8 @@ export default function ProfilePage() {
                     <ListItemText primary={obj.text}/>
                     </ListItem>
                   </Link>
+                  <p className={classes.tDisplay}>{obj.text2}</p>
+                  </div>
                 ))}
               </List>
             </Drawer>

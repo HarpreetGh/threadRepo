@@ -8,8 +8,7 @@ import {Visibility, VisibilityOff}
 from "@material-ui/icons";
 import {
   CssBaseline, TextField, 
-  FormControl, FormControlLabel,
-  Checkbox, Link, Grid, Avatar, Button,
+  FormControl, Grid, Avatar, Button,
   Typography, Container, InputLabel, 
   OutlinedInput, IconButton, InputAdornment
 } from "@material-ui/core";
@@ -50,6 +49,9 @@ export default function Login() {
       localStorage.setItem("id", loginRes.data.user.id);
       localStorage.setItem("username", loginRes.data.user.displayName);
       localStorage.setItem("email", loginRes.data.user.email);
+      localStorage.setItem("firstname", loginRes.data.user.firstname);
+      localStorage.setItem("lastname", loginRes.data.user.lastname);
+      localStorage.setItem("password", loginRes.data.user.password);
       history.push("/");
     } catch (err) {
       // err.response.data.msg && setError(err.response.data.msg);

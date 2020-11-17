@@ -24,6 +24,13 @@ import Album from "./Show-Listings"
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
+  tDisplay: {
+    fontSize: 15,
+    margin: 15,
+  },
+  empDisplay: {
+    paddingLeft: theme.spacing(40),
+  },
   cardGrid: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),
@@ -120,7 +127,6 @@ export default function WishList() {
         setIsLoaded(true);
         result.shift();
         setListings(result);
-        console.log('the results are:', result);
         },
         (error) => {
           setIsLoaded(true);
@@ -186,7 +192,7 @@ export default function WishList() {
                   {link: "http://localhost:3000/sold-listings", text: "Sold Listings", index: 1},
                   {link: "http://localhost:3000/order-history", text: "Order History", index: 2},
                   {link: "#", text: "Wishlist", index: 3},
-                  {link: "http://localhost:3000/messages-page", text: "Messages", index: 4},
+                  {link: "http://localhost:3000/messages-page/"+localStorage.getItem("username"), text: "Messages", index: 4},
                   {link: "http://localhost:3000/user-settings", text: "Settings", index: 5},
                 ].map((obj) => (
                   <Link href={obj.link}>
@@ -207,20 +213,23 @@ export default function WishList() {
               <Divider/>
               <List>
                 {[
-                  {link: "#", text: "Customer Support", index: 0},
-                  {link: "#", text: "Contact Email", index: 1},
-                  {link: "#", text: "Contact Number", index: 2},
+                  {link: "#", text: "Customer Support", index: 0, text2: "Questions & Answers"},// would go to a page that displays common questions and solutions
+                  {link: null, text: "Contact Email", index: 1, text2: "support@gmail.com"},
+                  {link: null, text: "Contact Number", index: 2, text2: "(559)695-8008"},
                 ].map((obj) => (
-                  <Link href={obj.link}>
+                  <div>
+                  <Link href = {obj.link}>
                     <ListItem button key={obj.text}>
                       <ListItemIcon>
                         {obj.index === 0 && <ContactSupportIcon/>}
                         {obj.index === 1 && <ContactMailIcon/>}
                         {obj.index === 2 && <ContactPhoneIcon/>}
                       </ListItemIcon>
-                      <ListItemText primary={obj.text}/>
+                    <ListItemText primary={obj.text}/>
                     </ListItem>
                   </Link>
+                  <p className={classes.tDisplay}>{obj.text2}</p>
+                  </div>
                 ))}
               </List>
             </Drawer>
@@ -231,7 +240,7 @@ export default function WishList() {
               {(listings.length > 0) ? (
                   <Album showFilters={false} inputFilter={{_id: listings,}}/>
               ):(
-                  <h1>No Items In Your WishList</h1>
+                  <h1 className={classes.empDisplay}>No Items In Your WishList</h1>
               )}
             </Typography>
           </main>
