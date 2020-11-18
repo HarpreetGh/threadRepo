@@ -126,15 +126,14 @@ export default function OrderHistory() {
         //console.log("the data is: ", data);
         setIsLoaded(true);
         setListings(data);
+        console.log(data[1].id);  //Prints out id of item
         },
         (error) => {
           setIsLoaded(true);
           setError(error);
       });
   }, [])
-  console.log('First item is: ', listings)//{dateOfPurchase: 1605224721083, name: "IS Jacket", id: "5fab216a35ed6f157c18dd03", price: 200}
-  //why isn't "listings[0].id" valid?
-  //console.log("data is now: ", listings);
+
 
   const displayListings = () => {// function maps a display template to each listed item
     return(

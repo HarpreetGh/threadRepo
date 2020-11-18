@@ -190,7 +190,6 @@ router.route('/update/:id').post((req, res) => {
     */
 router.route('/update/:id').post((req, res) => {
 if(req.body.password == null){
-    console.log(req.body.password)
         let updatedInfo = {
         firstname: req.body.firstname,
         lastname: req.body.lastname,
@@ -245,8 +244,8 @@ else{
 router.route('/history/:id').get((req, res) => {
     User.findById(req.params.id)
         .then(users => {res.json(users.history)
-            console.log("user history is:")
-            console.log(users.history)
+            //console.log("user history is:")
+            //console.log(users.history)
         })
         .catch(err => res.status(400).json('Error: ' + err));
 });
