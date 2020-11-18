@@ -213,7 +213,7 @@ export default function WishList() {
               <Divider/>
               <List>
                 {[
-                  {link: "#", text: "Customer Support", index: 0, text2: "Questions & Answers"},// would go to a page that displays common questions and solutions
+                  {link: null, text: "Customer Support", index: 0, text2: "Questions & Answers"},
                   {link: null, text: "Contact Email", index: 1, text2: "support@gmail.com"},
                   {link: null, text: "Contact Number", index: 2, text2: "(559)695-8008"},
                 ].map((obj) => (

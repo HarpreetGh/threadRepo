@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { Redirect } from 'react-router-dom';// used to redirect user if not logged in
+import { Redirect } from 'react-router-dom';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import axios from 'axios';
 import {
@@ -119,10 +119,9 @@ export default function UserSettings() {
     setfirstname(localStorage.getItem("firstname"));
     setlastname(localStorage.getItem("lastname"));
     setemail(localStorage.getItem("email"));
-    console.log("password is: " + localStorage.getItem("password"));
   }, [])
 
-  const onSubmit = async (e) => {// function should make the call to update the user
+  const onSubmit = async (e) => {// function will make the call to update the user
     e.preventDefault();
     try{
       const updatedUser = {
@@ -131,22 +130,19 @@ export default function UserSettings() {
         email: email,
         password: password,
       };
-
-      console.log(localStorage.getItem("id"));
-      console.log(updatedUser);
       axios.post("http://localhost:4000/users/update/" + localStorage.getItem("id"), updatedUser)
         .then(response => {
-          console.log(response);
-          //window.location = "http://localhost:3000/listings/";
-          //line above should redirect user to their profile homepage
+          // user needs to become re-authenticated based on updated info, should be automatically but for now logout then back in
+          window.location = "http://localhost:3000/profile-page";// line above should redirect user to their profile homepage
         });
     }
     catch(err){
+      setError(err);
       console.log("Error: " + err);
     }
   };
 
-  const handleShowPassword = () => {
+  const handleShowPassword = () => {// function helps reveal/conceal the input password
     setShowPassword(!showPassword);
   };
 
@@ -161,7 +157,7 @@ export default function UserSettings() {
       return(
         <div>
           <div className={classes.root}>
-            <CssBaseline />
+            <CssBaseline/>
             <AppBar
             position="relative"
             className={clsx(classes.appBar, {[classes.appBarShift]: open,})}
@@ -223,7 +219,7 @@ export default function UserSettings() {
               <Divider/>
               <List>
                 {[
-                  {link: "#", text: "Customer Support", index: 0, text2: "Questions & Answers"},// would go to a page that displays common questions and solutions
+                  {link: null, text: "Customer Support", index: 0, text2: "Questions & Answers"},
                   {link: null, text: "Contact Email", index: 1, text2: "support@gmail.com"},
                   {link: null, text: "Contact Number", index: 2, text2: "(559)695-8008"},
                 ].map((obj) => (
@@ -314,7 +310,7 @@ export default function UserSettings() {
                         </InputAdornment>
                         }
                         labelWidth={70}
-                      />
+                        />
                       </FormControl>
                     </Grid>
                   </Grid>
@@ -328,6 +324,15 @@ export default function UserSettings() {
                   onClick={onSubmit}
                   >
                     Update
+                  </Button>
+                  <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  value="Cancel"
+                  onClick={() => window.location = "http://localhost:3000/profile-page"}
+                  >
+                    Cancel
                   </Button>
                 </form>
               </div>

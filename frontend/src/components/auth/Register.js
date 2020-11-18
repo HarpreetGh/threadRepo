@@ -53,6 +53,8 @@ export default function Register() {
       localStorage.setItem("id", loginRes.data.user.id);
       localStorage.setItem("username", loginRes.data.user.displayName);
       localStorage.setItem("email", loginRes.data.user.email);
+      localStorage.setItem("firstname", loginRes.data.user.firstname);
+      localStorage.setItem("lastname", loginRes.data.user.lastname);
       history.push("/");
     } catch (err) {
       err.response.data.msg && setError(err.response.data.msg);

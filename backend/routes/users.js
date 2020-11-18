@@ -58,7 +58,7 @@ router.route('/sign_up').post((req, res) => {
         email,
         password: hash,
         history,
-        wishlist
+        wishlist,//
     });
 
     newUser.save()
@@ -189,13 +189,12 @@ router.route('/update/:id').post((req, res) => {
     )
     */
 router.route('/update/:id').post((req, res) => {
-if(req.body.password == null){
+    if(req.body.password == null){
         let updatedInfo = {
         firstname: req.body.firstname,
         lastname: req.body.lastname,
         email: req.body.email,
         }
-                
         User.updateOne(
             { _id: req.params.id },
             //updates,
@@ -209,36 +208,46 @@ if(req.body.password == null){
             res.end();
             }
         );
-    
-}
-   
-else{ 
-    bcrypt.hash(req.body.password, saltLength, function (err, hash){
-
-        let updatedInfo = {
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        password: hash,
-        }
-                
-        User.updateOne(
-            { _id: req.params.id },
-            //updates,
-            updatedInfo,
-            { new: true },
-            (err, user) => {
-                if (err) {
-                    return res.json({ success: false, err });
+    }
+    else{ 
+        bcrypt.hash(req.body.password, saltLength, function (err, hash){
+            let updatedInfo = {
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            email: req.body.email,
+            password: hash,
+            }
+            User.updateOne(
+                { _id: req.params.id },
+                //updates,
+                updatedInfo,
+                { new: true },
+                (err, user) => {
+                    if (err) {
+                        return res.json({ success: false, err });
+                    }
+                console.log(user);
+                res.end();
                 }
+            );
+        })
+    }
+});
+
+router.route('/updatewishlist/:id').post((req, res) => {
+    User.updateOne(
+        { _id: req.params.id },
+        //updates,
+        req.body,
+        { new: true },
+        (err, user) => {
+            if (err) {
+                return res.json({ success: false, err });
+            }
             console.log(user);
             res.end();
-            }
-        );
-    })
-}
-
-
+        }
+    );
 });
 
 router.route('/history/:id').get((req, res) => {
@@ -253,34 +262,33 @@ router.route('/history/:id').get((req, res) => {
 router.route('/wishlist/:id').get((req, res) => {
     User.findById(req.params.id)
         .then(users => {res.json(users.wishlist)
+        console.log("wishlist")
         console.log(users.wishlist)})
         .catch(err => res.status(400).json('Error: ' + err));
 });
 
 router.route('/buySuccess').post((req,res) => {
-let userHistory = [];
-const userId = req.body.buyerId
+    let userHistory = [];
+    const userId = req.body.buyerId
 
-
-userHistory.push({
+    userHistory.push({
     dateOfPurchase: new Date(),
     name: req.body.listingName,
     id: req.body.listingId,
     price: req.body.listingPrice
     }),
 
-User.findOneAndUpdate (
-    {_id: userId},
-    {$push: {history : userHistory}},
-    {new: true},
-    (err, doc) => {
-        if (err) {
-            return res.json ({success: false, err});
-        }
-        console.log(doc);
-        res.end();
-    });
-   
+    User.findOneAndUpdate (
+        {_id: userId},
+        {$push: {history : userHistory}},
+        {new: true},
+        (err, doc) => {
+            if (err) {
+                return res.json ({success: false, err});
+            }
+            console.log(doc);
+            res.end();
+        });
 });
 
 module.exports = router;
