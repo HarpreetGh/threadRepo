@@ -2,7 +2,6 @@ import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import UserContext from "../../context/UserContext";
 import Axios from "axios";
-import ErrorNotice from "../misc/ErrorNotice";
 import { makeStyles } from "@material-ui/core/styles";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { Visibility, VisibilityOff }
@@ -10,7 +9,7 @@ import { Visibility, VisibilityOff }
 import {
   CssBaseline, TextField,
   FormControl, FormControlLabel,
-  Checkbox, Link, Grid, Avatar, Button,
+  Checkbox, Grid, Avatar, Button,
   Typography, Container, InputLabel,
   OutlinedInput, IconButton, InputAdornment
 } from "@material-ui/core";

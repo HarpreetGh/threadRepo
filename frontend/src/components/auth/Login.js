@@ -8,8 +8,7 @@ import {Visibility, VisibilityOff}
 from "@material-ui/icons";
 import {
   CssBaseline, TextField, 
-  FormControl, FormControlLabel,
-  Checkbox, Link, Grid, Avatar, Button,
+  FormControl, Grid, Avatar, Button,
   Typography, Container, InputLabel, 
   OutlinedInput, IconButton, InputAdornment
 } from "@material-ui/core";
