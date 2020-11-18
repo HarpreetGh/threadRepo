@@ -189,11 +189,19 @@ router.route('/update/:id').post((req, res) => {
     )
     */
 router.route('/update/:id').post((req, res) => {
+   
     bcrypt.hash(req.body.password, saltLength, function (err, hash){
+        let updatedInfo = {
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            email: req.body.email,
+            password: hash,
+        }
+       
         User.updateOne(
         { _id: req.params.id },
         //updates,
-        req.body,
+        updatedInfo,
         { new: true },
         (err, user) => {
             if (err) {
@@ -203,8 +211,8 @@ router.route('/update/:id').post((req, res) => {
             res.end();
         }
     );
-    }
-)});
+    })
+});
 
 router.route('/history/:id').get((req, res) => {
     User.findById(req.params.id)
