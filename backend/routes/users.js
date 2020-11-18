@@ -189,29 +189,57 @@ router.route('/update/:id').post((req, res) => {
     )
     */
 router.route('/update/:id').post((req, res) => {
-   
-    bcrypt.hash(req.body.password, saltLength, function (err, hash){
+if(req.body.password == null){
+    console.log(req.body.password)
         let updatedInfo = {
-            firstname: req.body.firstname,
-            lastname: req.body.lastname,
-            email: req.body.email,
-            password: hash,
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        email: req.body.email,
         }
-       
+                
         User.updateOne(
-        { _id: req.params.id },
-        //updates,
-        updatedInfo,
-        { new: true },
-        (err, user) => {
-            if (err) {
-                return res.json({ success: false, err });
-            }
+            { _id: req.params.id },
+            //updates,
+            updatedInfo,
+            { new: true },
+            (err, user) => {
+                if (err) {
+                    return res.json({ success: false, err });
+                }
             console.log(user);
             res.end();
+            }
+        );
+    
+}
+   
+else{ 
+    bcrypt.hash(req.body.password, saltLength, function (err, hash){
+
+        let updatedInfo = {
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        email: req.body.email,
+        password: hash,
         }
-    );
+                
+        User.updateOne(
+            { _id: req.params.id },
+            //updates,
+            updatedInfo,
+            { new: true },
+            (err, user) => {
+                if (err) {
+                    return res.json({ success: false, err });
+                }
+            console.log(user);
+            res.end();
+            }
+        );
     })
+}
+
+
 });
 
 router.route('/history/:id').get((req, res) => {
