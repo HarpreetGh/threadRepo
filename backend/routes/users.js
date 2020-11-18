@@ -82,6 +82,7 @@ router.route('/login').post((req, res) => {
         if (err) return handleError(err);
     
     }).then(function(user) {
+        console.log(user)
         if(!user) {
             
             res.json('Invalid User');
@@ -89,10 +90,12 @@ router.route('/login').post((req, res) => {
         else {
 
             bcrypt.compare(req.body.password, user.password, function (err, result){
+               
                 if(result == true) {
                     
                     //res.send('users');
                     const token = jwt.sign({id: user._id}, process.env.JWT_SECRET);
+                    
                     res.json({
                         token,
                         user: {
@@ -152,7 +155,7 @@ router.get('/', auth, async (req, res) => {
     });
 });
 
-/*
+
 //This is used to update the users profile
 router.route('/update/:id').post((req, res) => {
    User.findById(req.params.id)
@@ -172,7 +175,8 @@ router.route('/update/:id').post((req, res) => {
         })
         .catch(err => res.status(400).json('Error: ' + err)); 
 });
-*/
+
+/* 
 router.route('/update/:id').post((req, res) => {
         //or use this
         //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
@@ -184,7 +188,7 @@ router.route('/update/:id').post((req, res) => {
         Object.keys(req.body).map((update) => (
             updates[update]= req.body[update])
         )
-        */
+    
        
         User.updateOne(
             { _id: req.params.id },
@@ -199,8 +203,8 @@ router.route('/update/:id').post((req, res) => {
                 res.end();
             }
         );
-});
-
+});          
+*/
 router.route('/history/:id').get((req, res) => {
     User.findById(req.params.id)
         .then(users => {res.json(users.history)
