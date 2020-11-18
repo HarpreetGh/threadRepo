@@ -7,6 +7,7 @@ import IconButton from "@material-ui/core/IconButton";
 import SearchIcon from "@material-ui/icons/Search";
 import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
+import SearchBar from "material-ui-search-bar";
 
 import AuthOptions from "../auth/AuthOptions";
 
@@ -46,9 +47,12 @@ export default function Header(props) {
         >
           {title}
         </Typography>
-        <IconButton>
-          <SearchIcon />
-        </IconButton>
+        <SearchBar
+    //value={this.state.value}
+    //onChange={(newValue) => this.setState({ value: newValue })}
+    //onRequestSearch={() => doSomethingWith(this.state.value)}
+    align="middle"
+  />
         <AuthOptions />
       </Toolbar>
       <Toolbar
