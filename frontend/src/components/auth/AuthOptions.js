@@ -18,6 +18,9 @@ export default function AuthOptions() {
     localStorage.setItem("id", "");
     localStorage.setItem("username", "");
     localStorage.setItem("email", "");
+    localStorage.setItem("firstname", "");
+    localStorage.setItem("lastname", "");
+    localStorage.setItem("password", "");
     history.push("/");
   };
   

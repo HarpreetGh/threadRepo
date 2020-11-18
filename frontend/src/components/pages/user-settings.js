@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { Redirect } from 'react-router-dom';// used to redirect user if not logged in
+import { Redirect } from 'react-router-dom';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import axios from 'axios';
 import {
   Drawer, CssBaseline, AppBar, Toolbar, List, Typography,
   Divider, IconButton, ListItem, ListItemIcon, ListItemText,
-  Link, Container, Grid, CardMedia, CardContent, CardActions,
-  Card, Button
+  Link, Grid, FormControl, InputLabel, OutlinedInput,
+  InputAdornment, Button, TextField
 } from '@material-ui/core';
+import {
+  Visibility, VisibilityOff
+} from '@material-ui/icons';
 import MoneyOffIcon from '@material-ui/icons/MoneyOff';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import HistoryIcon from '@material-ui/icons/History';
@@ -25,20 +28,13 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
-  cardGrid: {
-    paddingTop: theme.spacing(8),
-    paddingBottom: theme.spacing(8),
+  tDisplay: {
+    fontSize: 15,
+    margin: 15,
   },
-  card: {
-    height: "100%",
+  title: {
     display: "flex",
-    flexDirection: "column",
-  },
-  cardMedia: {
-    paddingTop: "100%",
-  },
-  cardContent: {
-    flexGrow: 1,
+    justifyContent: "center",
   },
   root: {
     display: "flex",
@@ -75,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
   drawerHeader: {
     display: "flex",
     alignItems: "center",
-    padding: theme.spacing(0, 1),
+    padding: theme.spacing(0, 30),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
     justifyContent: "flex-end",
@@ -101,6 +97,11 @@ const useStyles = makeStyles((theme) => ({
 export default function UserSettings() {
   const classes = useStyles();
   const theme = useTheme();
+  const [firstname, setfirstname] = useState();
+  const [lastname, setlastname] = useState();
+  const [email, setemail] = useState();
+  const [password, setpassword] = useState();
+  const [showPassword, setShowPassword] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -113,16 +114,37 @@ export default function UserSettings() {
     setOpen(false);
   };
 
-  useEffect(() => {// gets all the info of the user
-    axios.post("http://localhost:4000/listings/filter", {username: localStorage.getItem("username")})
-      .then(response => {
-        setIsLoaded(true);
-      },
-      (error) => {
-        setIsLoaded(true);
-        setError(error);
-      });
+  useEffect(() => {// gets all the current info of the user
+    setIsLoaded(true);
+    setfirstname(localStorage.getItem("firstname"));
+    setlastname(localStorage.getItem("lastname"));
+    setemail(localStorage.getItem("email"));
   }, [])
+
+  const onSubmit = async (e) => {// function will make the call to update the user
+    e.preventDefault();
+    try{
+      const updatedUser = {
+        firstname: firstname,
+        lastname: lastname,
+        email: email,
+        password: password,
+      };
+      axios.post("http://localhost:4000/users/update/" + localStorage.getItem("id"), updatedUser)
+        .then(response => {
+          // user needs to become re-authenticated based on updated info, should be automatically but for now logout then back in
+          window.location = "http://localhost:3000/profile-page";// line above should redirect user to their profile homepage
+        });
+    }
+    catch(err){
+      setError(err);
+      console.log("Error: " + err);
+    }
+  };
+
+  const handleShowPassword = () => {// function helps reveal/conceal the input password
+    setShowPassword(!showPassword);
+  };
 
   if(localStorage.getItem("auth-token") !== ""){// check if user logged in
     if(error){// handling errors
@@ -135,7 +157,7 @@ export default function UserSettings() {
       return(
         <div>
           <div className={classes.root}>
-            <CssBaseline />
+            <CssBaseline/>
             <AppBar
             position="relative"
             className={clsx(classes.appBar, {[classes.appBarShift]: open,})}
@@ -176,7 +198,7 @@ export default function UserSettings() {
                   {link: "http://localhost:3000/sold-listings", text: "Sold Listings", index: 1},
                   {link: "http://localhost:3000/order-history", text: "Order History", index: 2},
                   {link: "http://localhost:3000/wishlist", text: "Wishlist", index: 3},
-                  {link: "http://localhost:3000/messages-page", text: "Messages", index: 4},
+                  {link: "http://localhost:3000/messages-page/"+localStorage.getItem("username"), text: "Messages", index: 4},
                   {link: "#", text: "Settings", index: 5},
                 ].map((obj) => (
                   <Link href = {obj.link}>
@@ -197,11 +219,12 @@ export default function UserSettings() {
               <Divider/>
               <List>
                 {[
-                  {link: '#', text: 'Customer Support', index: 0},
-                  {link: '#', text: 'Contact Email', index: 1},
-                  {link: '#', text: 'Contact Number', index: 2},
+                  {link: null, text: "Customer Support", index: 0, text2: "Questions & Answers"},
+                  {link: null, text: "Contact Email", index: 1, text2: "support@gmail.com"},
+                  {link: null, text: "Contact Number", index: 2, text2: "(559)695-8008"},
                 ].map((obj) => (
-                  <Link href={obj.link}>
+                  <div>
+                  <Link href = {obj.link}>
                     <ListItem button key={obj.text}>
                       <ListItemIcon>
                         {obj.index === 0 && <ContactSupportIcon/>}
@@ -211,12 +234,109 @@ export default function UserSettings() {
                     <ListItemText primary={obj.text}/>
                     </ListItem>
                   </Link>
+                  <p className={classes.tDisplay}>{obj.text2}</p>
+                  </div>
                 ))}
               </List>
             </Drawer>
           </div>
           <main className={clsx(classes.content, {[classes.contentShift]: open,})}>
-            <div>USER SETTINGS</div>
+            <div className={classes.drawerHeader}>
+              <div>
+                <Typography className={classes.title} component="h1" variant="h5">
+                  Update Profile
+                </Typography>
+                <form onSubmit={onSubmit}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>{/* first name section */}
+                      <TextField
+                      autoComplete="fname"
+                      name="firstname"
+                      variant="outlined"
+                      type="text"
+                      required
+                      fullWidth
+                      value={firstname}
+                      onChange={(e) => setfirstname(e.target.value)}
+                      id="firstname"
+                      label="First Name"
+                      placeholder={firstname}
+                      autoFocus
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>{/* last name section */}
+                      <TextField
+                      autoComplete="lname"
+                      name="lastname"
+                      variant="outlined"
+                      type="text"
+                      required
+                      fullWidth
+                      value={lastname}
+                      onChange={(e) => setlastname(e.target.value)}
+                      id="lastname"
+                      label="Last Name"
+                      placeholder={lastname}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>{/* email section */}
+                      <TextField
+                      autoComplete="email"
+                      name="email"
+                      variant="outlined"
+                      type="text"
+                      required
+                      fullWidth
+                      value={email}
+                      onChange={(e) => setemail(e.target.value)}
+                      id="email"
+                      label="Email Address"
+                      placeholder={email}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>{/* password section */}
+                      <FormControl fullWidth variant="outlined">
+                        <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
+                        <OutlinedInput
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setpassword(e.target.value)}
+                        endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton onClick={handleShowPassword}>
+                            {showPassword ? <Visibility/> : <VisibilityOff/>}
+                          </IconButton>
+                        </InputAdornment>
+                        }
+                        labelWidth={70}
+                        />
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                  <Button
+                  onSubmit={onSubmit}
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  value="Update"
+                  onClick={onSubmit}
+                  >
+                    Update
+                  </Button>
+                  <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  value="Cancel"
+                  onClick={() => window.location = "http://localhost:3000/profile-page"}
+                  >
+                    Cancel
+                  </Button>
+                </form>
+              </div>
+            </div>
           </main>
         </div>
       );

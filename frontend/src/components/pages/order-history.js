@@ -6,8 +6,7 @@ import axios from 'axios';
 import {
   Drawer, CssBaseline, AppBar, Toolbar, List, Typography,
   Divider, IconButton, ListItem, ListItemIcon, ListItemText,
-  Link, Container, Grid, CardMedia, CardContent, CardActions,
-  Card, Button
+  Link
 } from '@material-ui/core';
 import MoneyOffIcon from '@material-ui/icons/MoneyOff';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
@@ -26,6 +25,13 @@ import Album from "./Show-Listings"
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
+  tDisplay: {
+    fontSize: 15,
+    margin: 15,
+  },
+  empDisplay: {
+    paddingLeft: theme.spacing(40),
+  },
   cardGrid: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),
@@ -105,7 +111,9 @@ export default function OrderHistory() {
   const [open, setOpen] = React.useState(false);
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [listings, setListings] = useState([]);
+  const [listings, setListings] = useState([]);// container for listings
+  let tListings = [];// container for mod. listings
+  let tIDs = [];// container for listing IDs (only)
   
   const handleDrawerOpen = () => {// function opens the side drawer
     setOpen(true);
@@ -119,51 +127,38 @@ export default function OrderHistory() {
     fetch("http://localhost:4000/users/history/" + localStorage.getItem("id"))
       .then(res => res.json())
       .then(data => {
-        //console.log("the data is: ", data);
         setIsLoaded(true);
-        setListings(data);
-        },
-        (error) => {
-          setIsLoaded(true);
-          setError(error);
+        for(let i = 0; i < data.length; i++){// for loop used to extract data for usage outside of useEffect()
+          tListings.push(data[i]);// structure is [{},{},{},...], data[1].id prints out an item ID
+          tIDs.push(data[i].id);// container for listing IDs (only)
+          axios.get('http://localhost:4000/listings/' + tIDs[i])
+            .then(response => {
+              setIsLoaded(true);
+              //console.log("data", response.data);// each individual listing
+              listings.push(response.data);
+            },{/*
+            (error) => {
+              setIsLoaded(true);
+              setError(error);
+            }*/}
+            );
+        }
+        //console.log("temp. listings", tListings);
+        //console.log("temp. IDs", tIDs);
+      },
+      (error) => {
+        setIsLoaded(true);
+        setError(error);
       });
   }, [])
-  console.log('1: ', listings[0])//{dateOfPurchase: 1605224721083, name: "IS Jacket", id: "5fab216a35ed6f157c18dd03", price: 200}
-  //why isn't "listings[0].id" valid?
-  //console.log("data is now: ", listings);
+  //console.log(listings);
 
-  const displayListings = () => {// function maps a display template to each listed item
-    return(
-      <Container maxWidth="md" className={classes.cardGrid}>
-        <Grid container spacing={4}>
-          {listings.map(item => (
-            <Grid item key={listings} xs={12} sm={6} md={4}>
-              <Card className={classes.card}>
-                <CardMedia
-                  className={classes.cardMedia}
-                  image={item.image}
-                  title="Image title"
-                />
-                <CardContent className={classes.cardContent}>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    {item.name}
-                  </Typography>
-                  <Typography>
-                    {item.description}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button href={"/listings/" + item._id} size="medium" color="secondary">
-                    Bought
-                  </Button>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-    )
-  };
+  /*listings.map(item => (
+    console.log(item.image),
+    console.log(item.name),
+    console.log(item.description),
+    console.log(item._id)
+  ));*/
 
   if(localStorage.getItem("auth-token") !== ""){// check if user logged in
     if(error){// handling errors
@@ -217,7 +212,7 @@ export default function OrderHistory() {
                   {link: "http://localhost:3000/sold-listings", text: "Sold Listings", index: 1},
                   {link: "#", text: "Order History", index: 2},
                   {link: "http://localhost:3000/wishlist", text: "Wishlist", index: 3},
-                  {link: "http://localhost:3000//message-page", text: "Messages", index: 4},
+                  {link: "http://localhost:3000/messages-page/"+localStorage.getItem("username"), text: "Messages", index: 4},
                   {link: "http://localhost:3000/user-settings", text: "Settings", index: 5},
                 ].map((obj) => (
                   <Link href={obj.link}>
@@ -238,11 +233,12 @@ export default function OrderHistory() {
               <Divider/>
               <List>
                 {[
-                  {link: '#', text: 'Customer Support', index: 0},
-                  {link: '#', text: 'Contact Email', index: 1},
-                  {link: '#', text: 'Contact Number', index: 2},
+                  {link: null, text: "Customer Support", index: 0, text2: "Questions & Answers"},// would go to a page that displays common questions and solutions
+                  {link: null, text: "Contact Email", index: 1, text2: "support@gmail.com"},
+                  {link: null, text: "Contact Number", index: 2, text2: "(559)695-8008"},
                 ].map((obj) => (
-                  <Link href={obj.link}>
+                  <div>
+                  <Link href = {obj.link}>
                     <ListItem button key={obj.text}>
                       <ListItemIcon>
                         {obj.index === 0 && <ContactSupportIcon/>}
@@ -252,6 +248,8 @@ export default function OrderHistory() {
                     <ListItemText primary={obj.text}/>
                     </ListItem>
                   </Link>
+                  <p className={classes.tDisplay}>{obj.text2}</p>
+                  </div>
                 ))}
               </List>
             </Drawer>
@@ -259,12 +257,11 @@ export default function OrderHistory() {
           <main className={clsx(classes.content, {[classes.contentShift]: open,})}>
             <div className={classes.drawerHeader}/>
             <Typography paragraph>
-              {/*(listings.length > 0) ? (
-                <Album showFilters={false} inputFilter={{_id: listings,}}/>
+              {(listings.length > 0) ? (
+                  <Album showFilters={false} inputFilter={{_id: listings,}}/>
               ):(
-                <h1>No Items In Your History</h1>
-              )*/}
-              {displayListings}
+                  <h1 className={classes.empDisplay}>You Have No Orders</h1>
+              )}
             </Typography>
           </main>
         </div>

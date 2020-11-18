@@ -284,8 +284,15 @@ export default function EditPage(){
                             variant="contained"
                             color="primary"
                             value="Update"//Create
-                            onClick={()=>updateDetails()}
+                            onClick={()=>updateDetails}
                             >Update</Button>
+                            <Button
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            value="Cancel"
+                            onClick={() => window.location = "http://localhost:3000/profile-page"}
+                            >Cancel</Button>
                         </form>
                     </div>
                 </Container>
@@ -294,7 +301,7 @@ export default function EditPage(){
     }
     else{
         return (
-            <Redirect to='/login'/>
+            <Redirect to="/login"/>
         );
     }
 };

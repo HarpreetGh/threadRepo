@@ -135,7 +135,7 @@ export default function Listing() {
       wishlist.push(id);
     }
     console.log("After: ", wishlist);
-    axios.post('http://localhost:4000/users/update/' + localStorage.getItem("id"), { wishlist: wishlist })
+    axios.post('http://localhost:4000/users/updatewishlist/' + localStorage.getItem("id"), { wishlist: wishlist })
       .then(response => {
         console.log(response.data);
       })
