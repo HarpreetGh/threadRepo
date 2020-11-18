@@ -161,13 +161,12 @@ Home/splash page (All available listings)
     ID: UIR3
     Checkout page
     * Description: If the user is logged in and on an available specific listing, they can be taken to a page where they can checkout with PayPal API via a button. The PayPal button opens a new window requiring PayPal login then checking out with user-specified information.
-
     * Rationale: For the user to able to checkout a listing.
     * Dependency: UIR2
   
   ID: UIR4
   Filter listings
-  * Description: If the user is on the home page, they can filter listings with drop down menus of categories of garment type, size, condition, and color. This applies to the sold listings page too.
+  * Description: If the user is on the home page, they can filter listings with drop down menus of categories from a column sidebar of garment type, size, condition, and color. This applies to the sold listings page too.
   * Rationale: For the user to be able to use the website
   * Dependency: UIR1, UIR12
 
@@ -193,23 +192,53 @@ Home/splash page (All available listings)
   Create listing page
   * Description: Given the user is on the website, a user can go to the create listing page where they can create a new listing if they are logged in.
   * Rationale: For the user to be able to create a listing of their own.
-  * Dependency: UIR 1
+  * Dependency: UIR1
 
   ID: UIR8
   User profile page
-  * Description: Given the user is on the website, a user can view their user profile page if they are logged in.
+  * Description: Given the user is on the website, a user can view their user profile page if they are logged in. It contains all the listings they have ever listed - available or sold. There is also a drawer on the left which pulls out to view links/buttons to live listings, sold listings, order history, wishlist, messages, and settings.  Otherwise a login prompt will appear.
   * Rationale: For the user to able to view their profile.
   * Dependency: UIR1
 
     ID: UIR9
     Order history page
-    * Description: Given the user is on their user profile, they can view their order history page.
-    * Rationale: For the user to able to view their order history.
+    * Description: The user can view a page of their order history which contains listings they have bought. Similar to the appearance of all available, sold, and wishlist listings.
+    * Rationale: For the user to be able to view their order history.
+    * Dependency: UIR8
+
+    ID: UIR13
+    User settings/update profile page
+    * Description: The user can update their first and last name, email address, and password on this page with several forms containing their previous first name, last name, and email - the previous password is not present for security reasons.
+    * Rationale: For the user to update their information/profile.
+    * Dependency: UIR8
+
+    ID: UIR14
+    User messages page
+    * Description: They can view a page of messages they have sent and received.
+    * Rationale: For the user to be able to view their messages.
+    * Dependency: UIR8
+
+    ID: UIR15
+    User sold listings page
+    * Description: They can view a page of all the listings they have sold. Similar to the appearnce of all available listings, all sold listings, and the wishlist.
+    * Rationale: For the user to be able to view their sold listings.
+    * Dependency: UIR8
+
+    ID: UIR16
+    User live/available listings page
+    * Description: They can view a page of all the available listings still up for sale. They can edit and delete their listings individually via buttons with delete being delete on click and edit taking the user to an edit listing page.
+    * Rationale: For the user to be able to view, edit, delete the listings they have available.
+    * Dependency: UIR8
+
+    ID: UIR17
+    Edit listing page
+    * Description: Similar to create listing, there are forms to edit the picture, name, garment type, size, color, condition, price, and description of their available listing.
+    * Rationale: For the user to able to edit their available listing.
     * Dependency: UIR8
 
   ID: UIR11
   Wishlist page
-  * Description: Given the user is on the website, a user can view their wishlist which contains all the listings they have wishlisted. If the user has not wishlisted any listings, a message will be displayed stating the user has no items in their wishlist.
+  * Description: Given the user is on the website, a user can view their wishlist which contains all the listings they have wishlisted. If the user has not wishlisted any listings, a message will be displayed stating the user has no items in their wishlist. If the user is not logged in, a login prompt will appear instead.
   * Rationale: For the user to view their wishlisted items. 
   * Dependency: UIR1
 
@@ -228,7 +257,7 @@ Home/splash page (All available listings)
 3.2 Functional Requirements
 ID: FR1
 Access website
-* Description: A user should be able to access the website through a url via internet browser
+* Description: A user should be able to access the website through a url via internet browser.
 * Rationale: For the user to able to use the website
 * Dependency: N/A
 
@@ -288,19 +317,49 @@ Access website
 
       ID: FR9
       User profile  
-      * Description: If a user is logged in, they can view information about themselves they have provided in registration. 
+      * Description: If a user is logged in, they can view a page of all the listings have ever listed - available or sold. There is a drawer to live listings, sold listings, order history, wishlist, messages, and settings. Otherwise a login prompt will appear.
       * Rationale: For the user to view their user profile.
       * Dependency: FR6
 
         ID: FR10
         View order history
-        * Description: If a user is logged in and on their user profile page, they can view a page of their order history. 
+        * Description: The user can view a page of their order history which contains listings they have bought. 
         * Rationale: For the user to see their order history. 
+        * Dependency: FR9
+
+        ID: FR13
+        User settings/update profile
+        * Description: The user can update their first and last name, email address, and password on this page.
+        * Rationale: For the user to update their information.
+        * Dependency: FR9
+
+        ID: FR14
+        User messages
+        * Description: They can view a page of messages they have sent and received.
+        * Rationale: For the user to be able to view their messages.
+        * Dependency: FR9
+
+        ID: FR15
+        User sold listings
+        * Description: They can view a page of all the listings they have sold.
+        * Rationale: For the user to be able to view the listings they have sold.
+        * Dependency: FR9
+
+        ID: FR16
+        User live/available listings
+        * Description: They can view a page of all the available listings still up for sale. They can edit and delete their listings individually.
+        * Rationale: For the user to be able to view, edit, delete the listings they have available.
+        * Dependency: FR9
+
+        ID: FR17
+        Edit listing 
+        * Description: If the user is on their profile page (which contains their available listings) or the user live listings page - the user can edit the picture, name, garment type, size, color, condition, price, and description of their available listing.
+        * Rationale: For the user to able to edit their available listing.
         * Dependency: FR9
 
       ID: FR12
       View wishlist
-      * Description: If the user is logged in, they can view the listings they have wishlisted on the wishlist page. The wishlist page does not need listing(s) to be wishlisted in order to view the wishlist page.
+      * Description: If the user is logged in, they can view the listings they have wishlisted on the wishlist page. The wishlist page does not need listing(s) to be wishlisted in order to view the wishlist page. If the user is not logged in, a login prompt will appear instead.
       * Rationale: For the user to see their wishlist.
       * Dependency: FR6, FR11
 
