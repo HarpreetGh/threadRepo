@@ -6,8 +6,7 @@ import axios from 'axios';
 import {
   Drawer, CssBaseline, AppBar, Toolbar, List, Typography,
   Divider, IconButton, ListItem, ListItemIcon, ListItemText,
-  Link, Container, Grid, CardMedia, CardContent, CardActions,
-  Card, Button
+  Link, TextField, Paper 
 } from '@material-ui/core';
 import MoneyOffIcon from '@material-ui/icons/MoneyOff';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
@@ -22,8 +21,12 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
+import io from 'socket.io-client'
 
+const socket = io.connect('http://localhost:3500')
 const drawerWidth = 240;
+
+
 
 const useStyles = makeStyles((theme) => ({
   cardGrid: {
@@ -83,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+    padding: theme.spacing(0,85),
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -97,6 +100,41 @@ const useStyles = makeStyles((theme) => ({
     }),
     marginLeft: 0,
   },
+    card2: {
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr",
+      margin: "30px",
+      minHeight: "30rem"
+  },
+  form: {
+    maxWidth: "350px",
+    borderRadius: "5px",
+    padding: "20px",
+    boxShadow: "0px 3px 24px -8px rgba(0, 0, 0, 0.75)"
+  },
+  namefield: { 
+    marginBottom: "40px",
+ 
+   },
+  button: {
+    marginTop: "20px",
+    padding: "10px",
+    background: "transparent",
+    borderRadius: "5px"
+  },
+  renderchat: {
+    maxWidth: "5000px",
+    borderRadius: "5px",
+    padding: "20px",
+    boxShadow: "0px 3px 24px -8px rgba(0, 0, 0, 0.75)"
+  },
+  h3: { 
+    color: "#2f72da" 
+  },
+  span: { 
+    color: "black" 
+  }
+
 }));
 
 export default function MessagePage() {
@@ -105,7 +143,47 @@ export default function MessagePage() {
   const [open, setOpen] = React.useState(false);
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  
+  const[state, setState] = useState({message: '', name: localStorage.getItem("username") })
+  const[chat, setChat] = useState([])
+   
+
+  useEffect(() => {
+  socket.on('message', ({name, message}) => {
+
+      setChat([...chat,{name,message}])
+  })
+},[state])
+
+
+  const onTextChange = e => { 
+    
+    setState({...state, [e.target.name]: e.target.value})
+  }
+
+
+
+   const onMessageSubmit = e => {
+    e.preventDefault()
+    const {name, message} = state
+   
+    socket.emit('message', {name, message})
+    setState({message: '', name}) 
+  }
+
+
+  const renderChat = () => {
+   
+    return chat.map(({ name,message}, index) => (
+      <div key = {index}>
+        <h3>
+         
+          {name}: <span>{message}</span>
+        </h3>
+      </div>
+    ))  
+  }
+
+
   const handleDrawerOpen = () => {// function opens the side drawer
     setOpen(true);
   };
@@ -237,22 +315,34 @@ export default function MessagePage() {
                 ))}
               </List>
             </Drawer>
+          </div >
+          
+        
+           
+            <div className= {classes.card2}>
+            <form onSubmit = {onMessageSubmit}>
+                  <h1>Messenger</h1>
+                  
+                  <div className = {classes.namefield}>
+                    {"Welcome " + state.name + "!"}
+                  </div>
+                  <div>
+                    <TextField 
+                    name = "message" 
+                    onChange = {e => onTextChange(e)} 
+                    value ={state.message}
+                    id = "outlined-multiline-static"
+                    variant = "outlined" 
+                    label = "Message"
+                    />
+                  </div>
+                  <button>Send Message</button>
+            </form>
+            <div className = {classes.renderchat}>
+              <h1>Chat Log</h1>
+              {renderChat()}
           </div>
-          <main className={clsx(classes.content, {[classes.contentShift]: open,})}>
-            <div className={classes.drawerHeader}/>
-              <Typography paragraph>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                ut labo re et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
-                facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
-                gravida rutrum quisque non tellus. Convallis convallis tellus id interdum velit laoreet id
-                donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-                adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra nibh cras.
-                Metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo quis
-                imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
-                arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
-                donec massa sapien faucibus et molestie ac.
-              </Typography>
-          </main>
+          </div>
         </div>
       );
     }

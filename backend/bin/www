@@ -7,6 +7,24 @@
 var app = require('../app');
 var debug = require('debug')('myapp:server');
 var http = require('http');
+const app2 = require('express')()
+const http2 = require('http').createServer(app2)
+const io = require('socket.io')(http2);
+
+
+io.on('connection', socket => {
+  socket.on('message', ({name, message}) => {
+    io.emit('message',  {name,message})
+   
+  })
+})
+
+
+
+http2.listen(3500,function() {
+  console.log('listening on port 3500')
+})
+
 
 /**
  * Get port from environment and store in Express.
