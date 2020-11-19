@@ -178,11 +178,11 @@ export default function Album(props) {
                 </CardContent>
                 <CardActions>
                   {item.sold? (
-                    <Button href={"/listings/" + item._id} size="medium" color="secondary">
+                    <Button variant="contained" href={"/listings/" + item._id} size="medium" color="secondary">
                       SOLD
                     </Button>
                   ):(
-                      <Button href={"/listings/" + item._id} size="medium" color="primary" variant="outlined">
+                      <Button variant="contained" href={"/listings/" + item._id} size="medium" color="primary">
                     Buy ${item.price}
                   </Button>
                   )
