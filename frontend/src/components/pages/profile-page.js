@@ -15,9 +15,6 @@ import HistoryIcon from '@material-ui/icons/History';
 import StarIcon from '@material-ui/icons/Star';
 import MailIcon from '@material-ui/icons/Mail';
 import SettingsIcon from '@material-ui/icons/Settings';
-import ContactSupportIcon from '@material-ui/icons/ContactSupport';
-import ContactMailIcon from '@material-ui/icons/ContactMail';
-import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -136,40 +133,19 @@ export default function ProfilePage() {
       });
   }, [])
 
-  function deleteItem(){// function deletes an individual item
-      console.log("you are trying to delete item#: ")
-      /*
+  const deleteItem = (itemID) => {// function deletes an individual item
+    console.log("you are trying to delete item#: ", itemID);
     axios.delete("http://localhost:4000/listings/" + itemID)
       .then(response => {
-        setReply(response.data);
+        //setReply(response.data);
+        console.log("Success", response);
+        window.location = "http://localhost:3000/profile-page";
       },
       (error) => {
         setError(error);
       }
     );
-    */
-  }
-
-  function ListingStatus(sVal, tID){// function verifies if item is sold or not, then gives the necessary button uses
-    if(!sVal)
-      return(
-        <div>
-          <Button href={"/edit-page/" + tID} size="medium" color="primary">
-            EDIT
-          </Button>
-          <Button size="medium" color="primary" onclick={console.log(tID)}>
-            DELETE
-          </Button>
-        </div>
-      );
-    else return(
-      <div>
-        <Button href={"/listings/" + tID} size="medium" color="secondary">
-          SOLD
-        </Button>
-      </div>
-    );
-  }
+  };
 
   const displayListings = () => {// function maps a display template to each listed item
     return(
@@ -191,9 +167,20 @@ export default function ProfilePage() {
                     {item.description}
                   </Typography>
                 </CardContent>
-                <CardActions>
-                  {ListingStatus(item.sold, item._id)}
-                </CardActions>
+                {(!item.sold) ?
+                  <CardActions>
+                    <Button variant="contained" href={"/edit-page/" + item._id} size="medium" color="primary">
+                      EDIT
+                    </Button>{console.log(item._id)}
+                    <Button variant="contained" size="medium" color="secondary" onClick={ () => {deleteItem(item._id)} }>
+                      DELETE
+                    </Button>
+                  </CardActions>
+                :
+                  <Button variant="contained" href={"/listings/" + item._id} size="medium" color="secondary">
+                    SOLD
+                  </Button>
+                }
               </Card>
             </Grid>
           ))}
@@ -276,27 +263,6 @@ export default function ProfilePage() {
                 ))}
               </List>
               <Divider/>
-              <List>
-                {[
-                  {link: null, text: "Customer Support", index: 0, text2: "Questions & Answers"},
-                  {link: null, text: "Contact Email", index: 1, text2: "support@gmail.com"},
-                  {link: null, text: "Contact Number", index: 2, text2: "(559)695-8008"},
-                ].map((obj) => (
-                  <div>
-                  <Link href = {obj.link}>
-                    <ListItem button key={obj.text}>
-                      <ListItemIcon>
-                        {obj.index === 0 && <ContactSupportIcon/>}
-                        {obj.index === 1 && <ContactMailIcon/>}
-                        {obj.index === 2 && <ContactPhoneIcon/>}
-                      </ListItemIcon>
-                    <ListItemText primary={obj.text}/>
-                    </ListItem>
-                  </Link>
-                  <p className={classes.tDisplay}>{obj.text2}</p>
-                  </div>
-                ))}
-              </List>
             </Drawer>
           </div>
           <main className={clsx(classes.content, {[classes.contentShift]: open,})}>

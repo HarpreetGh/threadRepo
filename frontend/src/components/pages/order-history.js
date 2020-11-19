@@ -14,9 +14,6 @@ import HistoryIcon from '@material-ui/icons/History';
 import StarIcon from '@material-ui/icons/Star';
 import MailIcon from '@material-ui/icons/Mail';
 import SettingsIcon from '@material-ui/icons/Settings';
-import ContactSupportIcon from '@material-ui/icons/ContactSupport';
-import ContactMailIcon from '@material-ui/icons/ContactMail';
-import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -231,27 +228,6 @@ export default function OrderHistory() {
                 ))}
               </List>
               <Divider/>
-              <List>
-                {[
-                  {link: null, text: "Customer Support", index: 0, text2: "Questions & Answers"},// would go to a page that displays common questions and solutions
-                  {link: null, text: "Contact Email", index: 1, text2: "support@gmail.com"},
-                  {link: null, text: "Contact Number", index: 2, text2: "(559)695-8008"},
-                ].map((obj) => (
-                  <div>
-                  <Link href = {obj.link}>
-                    <ListItem button key={obj.text}>
-                      <ListItemIcon>
-                        {obj.index === 0 && <ContactSupportIcon/>}
-                        {obj.index === 1 && <ContactMailIcon/>}
-                        {obj.index === 2 && <ContactPhoneIcon/>}
-                      </ListItemIcon>
-                    <ListItemText primary={obj.text}/>
-                    </ListItem>
-                  </Link>
-                  <p className={classes.tDisplay}>{obj.text2}</p>
-                  </div>
-                ))}
-              </List>
             </Drawer>
           </div>
           <main className={clsx(classes.content, {[classes.contentShift]: open,})}>
