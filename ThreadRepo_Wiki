@@ -195,9 +195,9 @@ Home/splash page (All available listings)
   * Dependency: UIR1
 
   ID: UIR8
-  User profile page
-  * Description: Given the user is on the website, a user can view their user profile page if they are logged in. It contains all the listings they have ever listed - available or sold. There is also a drawer on the left which pulls out to view links/buttons to live listings, sold listings, order history, wishlist, messages, and settings.  Otherwise a login prompt will appear.
-  * Rationale: For the user to able to view their profile.
+  User profile page/user live listings
+  * Description: Given the user is on the website, a user can view their user profile page if they are logged in. It contains the live listings they have. They can edit and delete their listings individually via buttons with delete being delete on click and edit taking the user to an edit listing page. There is also a drawer on the left which pulls out to view links/buttons to live listings, sold listings, order history, wishlist, messages, and settings.  Otherwise a login prompt will appear.
+  * Rationale: For the user to able to view their profile, edit and delete their live listings.
   * Dependency: UIR1
 
     ID: UIR9
@@ -225,12 +225,6 @@ Home/splash page (All available listings)
     * Dependency: UIR8
 
     ID: UIR16
-    User live/available listings page
-    * Description: They can view a page of all the available listings still up for sale. They can edit and delete their listings individually via buttons with delete being delete on click and edit taking the user to an edit listing page.
-    * Rationale: For the user to be able to view, edit, delete the listings they have available.
-    * Dependency: UIR8
-
-    ID: UIR17
     Edit listing page
     * Description: Similar to create listing, there are forms to edit the picture, name, garment type, size, color, condition, price, and description of their available listing.
     * Rationale: For the user to able to edit their available listing.
@@ -316,9 +310,9 @@ Access website
       * Dependency: FR4, FR6
 
       ID: FR9
-      User profile  
-      * Description: If a user is logged in, they can view a page of all the listings have ever listed - available or sold. There is a drawer to live listings, sold listings, order history, wishlist, messages, and settings. Otherwise a login prompt will appear.
-      * Rationale: For the user to view their user profile.
+      User profile/user live listings 
+      * Description: If a user is logged in, they can view a page of all the available listings still up for sale (live listings). They can edit and delete their listings individually. There is a drawer to live listings, sold listings, order history, wishlist, messages, and settings. Otherwise a login prompt will appear.
+      * Rationale: For the user to view their user profile, edit and delete listings they have available.
       * Dependency: FR6
 
         ID: FR10
@@ -327,28 +321,22 @@ Access website
         * Rationale: For the user to see their order history. 
         * Dependency: FR9
 
-        ID: FR13
+        ID: FR14
         User settings/update profile
         * Description: The user can update their first and last name, email address, and password on this page.
         * Rationale: For the user to update their information.
         * Dependency: FR9
 
-        ID: FR14
+        ID: FR15
         User messages
         * Description: They can view a page of messages they have sent and received.
         * Rationale: For the user to be able to view their messages.
         * Dependency: FR9
 
-        ID: FR15
+        ID: FR16
         User sold listings
         * Description: They can view a page of all the listings they have sold.
         * Rationale: For the user to be able to view the listings they have sold.
-        * Dependency: FR9
-
-        ID: FR16
-        User live/available listings
-        * Description: They can view a page of all the available listings still up for sale. They can edit and delete their listings individually.
-        * Rationale: For the user to be able to view, edit, delete the listings they have available.
         * Dependency: FR9
 
         ID: FR17
