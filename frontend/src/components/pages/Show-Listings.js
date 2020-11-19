@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import AddIcon from '@material-ui/icons/Add';
+import MenuIcon from '@material-ui/icons/Menu';
+import SearchIcon from '@material-ui/icons/Search';
 import {
   Button, Card, CardActions, CardContent,
   CardMedia, CssBaseline, Grid, Typography,
-  Container, Fab, FormControl, Input,
+  Container, FormControl, Input, InputBase,
   InputLabel, Select, MenuItem, Drawer,
   ListItemText, Checkbox, Chip, Toolbar,
-  Divider, Slider
+  Divider, Slider, Paper, IconButton
 } from '@material-ui/core';
-import { Row, Col } from "reactstrap";
+import { Row, Col, Form } from "reactstrap";
 import Axios from "axios";
+import clsx from 'clsx';
 import {Filters} from "../misc/filters";
 
+
+const drawerWidth = 140;
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -53,20 +57,47 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 120,
     maxWidth: 300,
   },
+  input: {
+    marginLeft: theme.spacing(1),
+    flex: 1,
+  },
+  iconButton: {
+    padding: 10,
+  },
   drawer:{
-    height: 'calc(100% - 1000px)',
-    background: "blue"
+    maxWidth: drawerWidth,
+    height: 20,
   },
   drawerPaperAnchor:{
     borderRight: "0px"
   },
-  paperRoot:{
-    background: "rgb(0 0 0 / 0%)"
+  drawerPaperRoot:{
+    background: "rgb(255 255 255 / 100%)",
+    maxWidth: drawerWidth
   },
   drawerPaper:{
     //top: 0,
-    "top": 20
-  }
+    top: 0
+  },
+  searchBar: {
+    padding: '2px 4px',
+    display: 'flex',
+    alignItems: 'center',
+    width: "100%",
+    zIndex: theme.zIndex.drawerHeader + 1,
+    transition: theme.transitions.create(["margin", "width"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  searchBarShift: {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawerWidth,
+    transition: theme.transitions.create(["margin", "width"], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
 }));
 
 const sortOptions = [
@@ -79,6 +110,8 @@ export default function Album(props) {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [reLoad, setReLoad] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const [listings, setListings] = useState([]);
   const [showFilters, setShowFilters] = useState(props.showFilters);
   const [filter, setFilter] = useState({
@@ -266,6 +299,24 @@ export default function Album(props) {
     </FormControl>
   );
 
+  const searchListings = () => {
+    Axios.post("http://localhost:4000/listings/filter", props.inputFilter)
+      .then(response => {
+        response.data.reverse()
+        setListings([]);
+        setListings(response.data.filter(function(list){
+          if(list.name.toLowerCase().indexOf(search.toLowerCase()) === -1) { 
+            return false 
+          }
+          return true
+        }))
+      });
+  }
+
+  const handleDrawerToggle = () => {// function opens the side drawer
+    setOpen(!open);
+  };
+
 /*
   const filterSlide = (currentFilter) => (
     <FormControl className={classes.formControl}>
@@ -297,22 +348,38 @@ export default function Album(props) {
       <React.Fragment>
         <CssBaseline />
         <main>
-          
-          <Drawer
-            variant="permanent"
+          <Paper className={classes.paperRoot} className={clsx(classes.searchBar, { [classes.searchBarShift]: open, })}>
+            <IconButton 
+              className={classes.iconButton}
+              onClick={handleDrawerToggle}
+              >
+              <MenuIcon />
+            </IconButton>
+            <InputBase
+              className={classes.input}
+              placeholder="Search"
+              value={search}
+              onChange={(e) => { setSearch(e.target.value) }}
+            />
+            <IconButton onClick={searchListings} className={classes.iconButton}>
+              <SearchIcon />
+            </IconButton>
+          </Paper>
 
+          <Drawer
+            open={open}
+            variant="persistent"
+            className={classes.drawer}
             classes={{ paper:classes.drawerPaper,
               paperAnchorDockedLeft: classes.drawerPaperAnchor,
-              
             }}
-
             ModalProps={{
               hideBackdrop: true,
             }}
             PaperProps={{
               elevation: 0,
               variant: "elevation",
-              classes:{root: classes.paperRoot}
+              classes:{root: classes.drawerPaperRoot}
             }}
           >
             

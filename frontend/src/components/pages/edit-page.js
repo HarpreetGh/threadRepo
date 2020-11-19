@@ -9,6 +9,7 @@ import { Redirect } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
 import axios from 'axios';
 import { useParams } from "react-router-dom";
+import ProfileBar from "./profile-page";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -144,6 +145,8 @@ export default function EditPage(){
         }
         else{
             return (
+            <div> 
+                <ProfileBar/>
                 <Container component="main" maxWidth="lg">
                     <CssBaseline />
                     <div>
@@ -289,13 +292,14 @@ export default function EditPage(){
                             <Button
                             fullWidth
                             variant="contained"
-                            color="primary"
+                            color="secondary"
                             value="Cancel"
-                            onClick={() => window.location = "http://localhost:3000/profile-page"}
+                            onClick={() => window.location = "http://localhost:3000/live-listings"}
                             >Cancel</Button>
                         </form>
                     </div>
                 </Container>
+            </div>
             );
         }
     }

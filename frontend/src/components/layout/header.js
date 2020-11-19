@@ -13,23 +13,19 @@ import AuthOptions from "../auth/AuthOptions";
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     borderBottom: `1px solid ${theme.palette.divider}`,
-    zIndex: 1500
   },
   toolbarTitle: {
     flex: 1,
     fontSize: 40,
     fontFamily: "Brush Script MT, Brush Script Std, cursive",
-    zIndex: 1500
   },
   toolbarSecondary: {
     justifyContent: "space-between",
     overflowX: "auto",
-    zIndex: 1500
   },
   toolbarLink: {
     padding: theme.spacing(1),
     flexShrink: 0,
-    zIndex: 1500
   },
 }));
 
@@ -50,9 +46,6 @@ export default function Header(props) {
         >
           {title}
         </Typography>
-        <IconButton>
-          <SearchIcon />
-        </IconButton>
         <AuthOptions />
       </Toolbar>
       <Toolbar
