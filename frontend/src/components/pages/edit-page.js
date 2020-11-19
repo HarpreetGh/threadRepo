@@ -55,6 +55,7 @@ export default function EditPage(){
     const [price, setPrice] = useState("");
     const [image, setImage] = useState("");
     const [url, setUrl] = useState("");
+    const [newImage, setNewImage] = useState(false);
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const classes = useStyles();
@@ -91,29 +92,26 @@ export default function EditPage(){
         });
     }, [])
 
-    const updateDetails =()=>{// should replace the image of an existing listing
-        const data = new FormData()
-        data.append("file",image)
-        data.append("upload_preset","threadRepo")
-        data.append("cloud_name","hardhats")
-        fetch("https://api.cloudinary.com/v1_1/hardhats/image/upload",{
-          method:"post",
-          body:data
-        })
-        .then(res=>res.json())
-        .then(data=>{
-          console.log(data)
-          setUrl(data.url)
-        })
-        .catch(err=>{
-          console.log(err)
-        })
-    }
+    const imageUpdate = (input) => {
+        setNewImage(true);
+        setImage(input);
+    } 
 
     const onSubmit = async (e) => {
         e.preventDefault();
         try{
-            const updatedListing = {
+            console.log(newImage);
+            if(newImage){
+                const data = new FormData()
+                data.append("file", image)
+                data.append("upload_preset", "threadRepo")
+                data.append("cloud_name", "hardhats")
+                const imageHold = await axios.post("https://api.cloudinary.com/v1_1/hardhats/image/upload"
+                    , data)
+
+                
+                    
+                const updatedListing = {
                 username: localStorage.getItem("username"),
                 name: itemName,
                 description: description,
@@ -122,14 +120,35 @@ export default function EditPage(){
                 color: color,
                 condition: condition,
                 price: price,
-                image: url,
-            };
+                image: imageHold.data.url,
+                };
+                console.log(imageHold.data.url);
+                axios.post("http://localhost:4000/listings/update/" + id, updatedListing)
+                .then(response => {
+                    setUrl(imageHold.data.url);
+                    //window.location = "http://localhost:3000/listings/" + id;//OR response.data;
+                    //line above should work once the issues with multiple clicks needed for images is fixed
+                });
+            }
+            else{
+                const updatedListing = {
+                    username: localStorage.getItem("username"),
+                    name: itemName,
+                    description: description,
+                    category: garmentType,
+                    size: size,
+                    color: color,
+                    condition: condition,
+                    price: price,
+                    image: url,
+                };
 
-        axios.post("http://localhost:4000/listings/update/" + id, updatedListing)
-            .then(response => {
-                //window.location = "http://localhost:3000/listings/" + id;//OR response.data;
-                //line above should work once the issues with multiple clicks needed for images is fixed
-            });
+                axios.post("http://localhost:4000/listings/update/" + id, updatedListing)
+                    .then(response => {
+                        //window.location = "http://localhost:3000/listings/" + id;//OR response.data;
+                        //line above should work once the issues with multiple clicks needed for images is fixed
+                    });
+                }
         }
         catch(err){
             console.log("Error: " + err);
@@ -160,7 +179,7 @@ export default function EditPage(){
                             <input
                             className={classes.fileInput}
                             type="file"
-                            onChange={(e)=>setImage(e.target.files[0])}
+                            onChange={(e)=>imageUpdate(e.target.files[0])}
                             />{/* Item image upload */}
                             <Grid className={classes.formControl}>{/* Item name */}
                                 <TextField
@@ -287,7 +306,6 @@ export default function EditPage(){
                             variant="contained"
                             color="primary"
                             value="Update"//Create
-                            onClick={()=>updateDetails}
                             >Update</Button>
                             <Button
                             fullWidth

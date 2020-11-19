@@ -146,7 +146,7 @@ export default function LiveListings() {
         <div>
           <ProfileBar/>
           {listings.length > 0? (displayListings()):(
-            <h1 className={classes.empDisplay}>No Items In Your WishList</h1>
+            <h1 className={classes.empDisplay}>You have no Live Listings</h1>
             )}
         </div>
       );

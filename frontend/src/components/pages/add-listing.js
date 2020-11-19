@@ -40,18 +40,13 @@ export default function Create() {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log(image);
       const data = new FormData()
       data.append("file", image)
       data.append("upload_preset", "threadRepo")
       data.append("cloud_name", "hardhats")
       const imageHold = await Axios.post("https://api.cloudinary.com/v1_1/hardhats/image/upload"
       , data)
-      console.log(imageHold);
-      console.log(imageHold.url);
-      console.log(imageHold.response);
-      console.log(imageHold.data);
-      console.log(imageHold.data.url);
-
       const newListing = {
         username: localStorage.getItem("username"),
         name: itemName,
