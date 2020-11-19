@@ -33,34 +33,25 @@ export default function Create() {
   const [condition, setCondition] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
-  const [url,setUrl] = useState("");
 
   const { userData } = useContext(UserContext);
   const classes = useStyles();
 
-
-  const postDetails =()=>{
-    const data = new FormData()
-    data.append("file",image)
-    data.append("upload_preset","threadRepo")
-    data.append("cloud_name","hardhats")
-    fetch("https://api.cloudinary.com/v1_1/hardhats/image/upload",{
-      method:"post",
-      body:data
-    })
-    .then(res=>res.json())
-    .then(data=>{
-      console.log(data)
-      setUrl(data.url)
-    })
-    .catch(err=>{
-      console.log(err)
-    })
-  }
-
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
+      const data = new FormData()
+      data.append("file", image)
+      data.append("upload_preset", "threadRepo")
+      data.append("cloud_name", "hardhats")
+      const imageHold = await Axios.post("https://api.cloudinary.com/v1_1/hardhats/image/upload"
+      , data)
+      console.log(imageHold);
+      console.log(imageHold.url);
+      console.log(imageHold.response);
+      console.log(imageHold.data);
+      console.log(imageHold.data.url);
+
       const newListing = {
         username: localStorage.getItem("username"),
         name: itemName,
@@ -71,7 +62,7 @@ export default function Create() {
         condition: condition,
         price: price,
         likes: 0,
-        image: url,
+        image: imageHold.data.url,
       };
 
       if( !itemName || !description ||!garmentType || !size||
@@ -86,6 +77,7 @@ export default function Create() {
     } 
     catch (err) {
       console.log("bad");
+      alert("Please wait");
     }
   };
 
@@ -243,7 +235,6 @@ export default function Create() {
               variant="contained"
               color="primary"
               value="Create"
-              onClick={()=>postDetails()}
             >
               Create
             </Button>

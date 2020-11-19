@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
   appBar: {
     height: 50,
+    zIndex: theme.zIndex.drawerHeader + 1,
     justifyContent: "center",
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
@@ -77,6 +78,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
+    zIndex: 3000
   },
   drawerHeader: {
     display: "flex",
@@ -204,6 +206,7 @@ export default function ProfilePage() {
             <AppBar
             position="relative"
             className={clsx(classes.appBar, {[classes.appBarShift]: open,})}
+            color="transparent"
             >
               <Toolbar>
                 <IconButton

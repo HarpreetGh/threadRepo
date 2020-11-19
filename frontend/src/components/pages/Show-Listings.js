@@ -52,6 +52,20 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     minWidth: 120,
     maxWidth: 300,
+  },
+  drawer:{
+    height: 'calc(100% - 1000px)',
+    background: "blue"
+  },
+  drawerPaperAnchor:{
+    borderRight: "0px"
+  },
+  paperRoot:{
+    background: "rgb(0 0 0 / 0%)"
+  },
+  drawerPaper:{
+    //top: 0,
+    "top": 20
   }
 }));
 
@@ -283,18 +297,29 @@ export default function Album(props) {
       <React.Fragment>
         <CssBaseline />
         <main>
+          
           <Drawer
-            className={classes.drawer}
             variant="permanent"
-            classes={{
-              paper: classes.drawerPaper,
+
+            classes={{ paper:classes.drawerPaper,
+              paperAnchorDockedLeft: classes.drawerPaperAnchor,
+              
+            }}
+
+            ModalProps={{
+              hideBackdrop: true,
+            }}
+            PaperProps={{
+              elevation: 0,
+              variant: "elevation",
+              classes:{root: classes.paperRoot}
             }}
           >
+            
           <Toolbar />
           {showFilters?(
             <div>
               {filterList(Filters.category) /*Category*/}
-
             
               {(filter.category.includes("Upper Thread") || filter.category.includes("Lower Thread")) ? (
                 filterList(Filters.sizeG)
@@ -314,15 +339,12 @@ export default function Album(props) {
             </div>
             ):("")
           }
-          <Divider />
+          <Divider/>
           <div>{sortList()}</div>
           </Drawer>
           {reLoad ? (displayListings()) : (displayListings())}
           
         </main>
-        <Fab href="/listings/create" color="primary" aria-label="add">
-          <AddIcon />
-        </Fab>
       </React.Fragment>
     );
   }

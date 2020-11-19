@@ -54,6 +54,7 @@ export default function Login() {
       localStorage.setItem("password", loginRes.data.user.password);
       history.push("/");
     } catch (err) {
+      alert("Login Crendentials incorrect");
       // err.response.data.msg && setError(err.response.data.msg);
     }
   };
