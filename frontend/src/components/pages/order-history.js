@@ -217,7 +217,7 @@ export default function OrderHistory() {
                   {link: "http://localhost:3000/sold-listings", text: "Sold Listings", index: 1},
                   {link: "#", text: "Order History", index: 2},
                   {link: "http://localhost:3000/wishlist", text: "Wishlist", index: 3},
-                  {link: "http://localhost:3000//message-page", text: "Messages", index: 4},
+                  {link: "http://localhost:3000/messages-page", text: "Messages", index: 4},
                   {link: "http://localhost:3000/user-settings", text: "Settings", index: 5},
                 ].map((obj) => (
                   <Link href={obj.link}>
