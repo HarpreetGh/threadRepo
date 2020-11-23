@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { Redirect } from 'react-router-dom';
@@ -17,9 +18,11 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
-import io from 'socket.io-client'
+import Sidebar from './Sidebar'
+//import io from 'socket.io-client'
+//import 'bootstrap/dist/css/bootstrap.min.css'
 
-const socket = io.connect('http://localhost:3500')
+//const socket = io.connect('http://localhost:3500')
 const drawerWidth = 240;
 
 
@@ -143,45 +146,10 @@ export default function MessagePage() {
   const [open, setOpen] = React.useState(false);
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const[state, setState] = useState({message: '', name: localStorage.getItem("username") })
-  const[chat, setChat] = useState([])
+  const userId = localStorage.getItem('id')
+  
+  
    
-
-  useEffect(() => {
-  socket.on('message', ({name, message}) => {
-
-      setChat([...chat,{name,message}])
-  })
-},[state])
-
-
-  const onTextChange = e => { 
-    
-    setState({...state, [e.target.name]: e.target.value})
-  }
-
-
-
-   const onMessageSubmit = e => {
-    e.preventDefault()
-    const {name, message} = state
-   
-    socket.emit('message', {name, message})
-    setState({message: '', name}) 
-  }
-
-
-  const renderChat = () => {
-   
-    return chat.map(({ name,message}, index) => (
-      <div key = {index}>
-        <h3>
-         
-          {name}: <span>{message}</span>
-        </h3>
-      </div>
-    ))  
-  }
 
 
   const handleDrawerOpen = () => {// function opens the side drawer
@@ -216,7 +184,7 @@ export default function MessagePage() {
           <div className={classes.root}>
             <CssBaseline/>
             <AppBar
-              position="relative"
+             style = {{position :'relative', zIndex: 0}}
               className={clsx(classes.appBar, {[classes.appBarShift]: open,})}
             >
               <Toolbar>
@@ -298,33 +266,16 @@ export default function MessagePage() {
               <Divider/>
             </Drawer>
           </div >
-          
-        
+
+          {/*This will be where we create our private chat */}
+               <div className = 'd-flex' style = {{height:"80vh"}}>
+                     <Sidebar id = {userId}/>
+               </div>
+            
+               
+               
+           {/*This will be where we create our private chat */}
            
-            <div className= {classes.card2}>
-            <form onSubmit = {onMessageSubmit}>
-                  <h1>Messenger</h1>
-                  
-                  <div className = {classes.namefield}>
-                    {"Welcome " + state.name + "!"}
-                  </div>
-                  <div>
-                    <TextField 
-                    name = "message" 
-                    onChange = {e => onTextChange(e)} 
-                    value ={state.message}
-                    id = "outlined-multiline-static"
-                    variant = "outlined" 
-                    label = "Message"
-                    />
-                  </div>
-                  <button>Send Message</button>
-            </form>
-            <div className = {classes.renderchat}>
-              <h1>Chat Log</h1>
-              {renderChat()}
-          </div>
-          </div>
         </div>
       );
     }
