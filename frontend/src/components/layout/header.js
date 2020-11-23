@@ -46,9 +46,6 @@ export default function Header(props) {
         >
           {title}
         </Typography>
-        <IconButton>
-          <SearchIcon />
-        </IconButton>
         <AuthOptions />
       </Toolbar>
       <Toolbar

@@ -6,17 +6,13 @@ import axios from 'axios';
 import {
   Drawer, CssBaseline, AppBar, Toolbar, List, Typography,
   Divider, IconButton, ListItem, ListItemIcon, ListItemText,
-  Link, TextField, Paper 
-} from '@material-ui/core';
+  Link, TextField } from '@material-ui/core';
 import MoneyOffIcon from '@material-ui/icons/MoneyOff';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import HistoryIcon from '@material-ui/icons/History';
 import StarIcon from '@material-ui/icons/Star';
 import MailIcon from '@material-ui/icons/Mail';
 import SettingsIcon from '@material-ui/icons/Settings';
-import ContactSupportIcon from '@material-ui/icons/ContactSupport';
-import ContactMailIcon from '@material-ui/icons/ContactMail';
-import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -29,6 +25,10 @@ const drawerWidth = 240;
 
 
 const useStyles = makeStyles((theme) => ({
+  tDisplay: {
+    fontSize: 15,
+    margin: 15,
+  },
   cardGrid: {
     paddingTop: theme.spacing(8),
     paddingBottom: theme.spacing(8),
@@ -284,36 +284,18 @@ export default function MessagePage() {
                   </ListItem>
                 ))}
               </List>
-            <Divider/>
-            <List>
-              {["All mail", "Trash", "Spam"].map((text, index) => (
-                <ListItem button key={text}>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItem>
-              ))}
-            </List>
-            <Divider/>
+              <Divider/>
               <List>
-                {[
-                  {link: "#", text: "Customer Support", index: 0},
-                  {link: "#", text: "Contact Email", index: 1},
-                  {link: "#", text: "Contact Number", index: 2},
-                ].map((obj) => (
-                  <Link href={obj.link}>
-                    <ListItem button key={obj.text}>
-                      <ListItemIcon>
-                        {obj.index === 0 && <ContactSupportIcon/>}
-                        {obj.index === 1 && <ContactMailIcon/>}
-                        {obj.index === 2 && <ContactPhoneIcon/>}
-                      </ListItemIcon>
-                      <ListItemText primary={obj.text}/>
-                    </ListItem>
-                  </Link>
+                {["All mail", "Trash", "Spam"].map((text, index) => (
+                  <ListItem button key={text}>
+                    <ListItemIcon>
+                      {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
+                    </ListItemIcon>
+                    <ListItemText primary={text} />
+                  </ListItem>
                 ))}
               </List>
+              <Divider/>
             </Drawer>
           </div >
           

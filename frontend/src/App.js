@@ -11,13 +11,10 @@ import Checkout from "./components/pages/Checkout";
 import Listing from "./components/pages/itemFromDB.js";
 import WishList from "./components/pages/Wishlist";
 import Sold from "./components/pages/Sold";
-import item from "./components/pages/item.js";
 import Axios from "axios";
 import Header from "./components/layout/header.js";
 
 import UserContext from "./context/UserContext.js";
-import Copyright from "./components/layout/Copyright.js";
-import ProfilePage from "./components/pages/profile-page.js";
 import EditPage from "./components/pages/edit-page.js";
 import LiveListings from "./components/pages/live-listings.js";
 import SoldListings from "./components/pages/sold-listings.js";
@@ -27,11 +24,9 @@ import MessagesPage from "./components/pages/messages-page.js";
 
 export const sections  = [
   { title: "Home", url: "/" },
-  { title: "Wishlist", url: "/wishlist" },
   { title: "Sold Listings", url: "/sold" },
   { title: "Create Listing", url: "/listings/create" },
-  { title: "All Listings", url: "/listings" },
-  { title: "Profile", url: "/profile-page" },
+  { title: "Profile", url: "/live-listings" },
 ];
 
 export default function App() {
@@ -80,18 +75,16 @@ export default function App() {
               <Route path="/sold" exact component={Sold} />
               <Route path="/listings" exact component={AllListings} />
               <Route path="/listings/create" exact component={AddListings} />
-              <Route path="/item" exact component={item} />
               <Route path="/listings/:id" exact component={Listing} />
               <Route path="/Checkout/:id" exact component={Checkout} />
               <Route path="/login" exact component={Login} />
               <Route path="/register" exact component={Register} />
-              <Route path="/profile-page" exact component={ProfilePage} />
               <Route path="/edit-page/:id" exact component={EditPage} />
               <Route path="/live-listings" exact component={LiveListings} />
               <Route path="/sold-listings" exact component={SoldListings} />
               <Route path="/order-history" exact component={OrderHistory} />
               <Route path="/user-settings" exact component={UserSettings} />
-              <Route path="/messages-page" exact component={MessagesPage} />
+              <Route path="/messages-page/:username" exact component={MessagesPage} />
             </Switch>
           </div>
         

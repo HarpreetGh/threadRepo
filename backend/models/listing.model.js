@@ -18,7 +18,7 @@ const listingSchema = new Schema({
         type: String,
         required: true,
         trim: true,
-        maxlength: 400
+        maxlength: 9001
     },
     category: {  // The garment type of the listing
         type: String,
