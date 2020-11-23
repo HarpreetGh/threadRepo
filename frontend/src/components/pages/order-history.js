@@ -68,97 +68,9 @@ export default function OrderHistory() {
     else{// rendering main display
       return(
         <div>
-          <div className={classes.root}>
-            <CssBaseline/>
-            <AppBar
-            position="relative"
-            className={clsx(classes.appBar, {[classes.appBarShift]: open,})}
-            >
-              <Toolbar>
-                <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                edge="start"
-                className={clsx(classes.menuButton, open && classes.hide)}
-                >
-                  <MenuIcon/>
-                </IconButton>
-                <Typography variant="h6" noWrap>
-                  {localStorage.getItem("username")}'s ORDER History!
-                </Typography>
-              </Toolbar>
-            </AppBar>
-          </div>
-          <div>
-            <Drawer
-            className={classes.drawer}
-            variant="persistent"
-            anchor="left"
-            open={open}
-            classes={{paper: classes.drawerPaper,}}
-            >
-              <div className={classes.drawerHeader}>
-                <IconButton onClick={handleDrawerClose}>
-                  {theme.direction === "ltr" ? <ChevronLeftIcon/> : <ChevronRightIcon/>}
-                </IconButton>
-              </div>
-              <Divider/>
-              <List>
-                {[
-                  {link: "http://localhost:3000/live-listings", text: "Live Listings", index: 0},
-                  {link: "http://localhost:3000/sold-listings", text: "Sold Listings", index: 1},
-                  {link: "#", text: "Order History", index: 2},
-                  {link: "http://localhost:3000/wishlist", text: "Wishlist", index: 3},
-                  {link: "http://localhost:3000/messages-page", text: "Messages", index: 4},
-                  {link: "http://localhost:3000/user-settings", text: "Settings", index: 5},
-                ].map((obj) => (
-                  <Link href={obj.link}>
-                    <ListItem button key={obj.text}>
-                      <ListItemIcon>
-                        {obj.index === 0 && <MoneyOffIcon/>}
-                        {obj.index === 1 && <MonetizationOnIcon/>}
-                        {obj.index === 2 && <HistoryIcon/>}
-                        {obj.index === 3 && <StarIcon/>}
-                        {obj.index === 4 && <MailIcon/>}
-                        {obj.index === 5 && <SettingsIcon/>}
-                      </ListItemIcon>
-                      <ListItemText primary={obj.text}/>
-                    </ListItem>
-                  </Link>
-                ))}
-              </List>
-              <Divider/>
-              <List>
-                {[
-                  {link: '#', text: 'Customer Support', index: 0},
-                  {link: '#', text: 'Contact Email', index: 1},
-                  {link: '#', text: 'Contact Number', index: 2},
-                ].map((obj) => (
-                  <Link href={obj.link}>
-                    <ListItem button key={obj.text}>
-                      <ListItemIcon>
-                        {obj.index === 0 && <ContactSupportIcon/>}
-                        {obj.index === 1 && <ContactMailIcon/>}
-                        {obj.index === 2 && <ContactPhoneIcon/>}
-                      </ListItemIcon>
-                    <ListItemText primary={obj.text}/>
-                    </ListItem>
-                  </Link>
-                ))}
-              </List>
-            </Drawer>
-          </div>
-          <main className={clsx(classes.content, {[classes.contentShift]: open,})}>
-            <div className={classes.drawerHeader}/>
-            <Typography paragraph>
-              {/*(listings.length > 0) ? (
-                <Album showFilters={false} inputFilter={{_id: listings,}}/>
-
           <ProfileBar />
               {(listings.length > 0) ? (
                   <Album showFilters={false} inputFilter={{_id: listings,}}/>
-
               ):(
                   <h1 className={classes.empDisplay}>You Have No Orders</h1>
               )}
