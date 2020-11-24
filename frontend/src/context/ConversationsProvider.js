@@ -3,7 +3,7 @@ import useLocalStorage from '../../src/components/misc/useLocalStorage'
 import {useContacts} from './ContactsProvider'
 import {useSocket} from './SocketProvider'
 const ConversationsContext = React.createContext()
- const userId = localStorage.getItem('id')
+ const userId = localStorage.getItem('username')          
 
 export function useConversations() {
     return useContext(ConversationsContext)

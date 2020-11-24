@@ -23,7 +23,7 @@ import OpenConversation from './OpenConversation';
 import { useConversations } from '../../context/ConversationsProvider';
 //import io from 'socket.io-client'
 //import 'bootstrap/dist/css/bootstrap.min.css'
-const userId = localStorage.getItem('id')
+const userId = localStorage.getItem('username')
 //const socket = io.connect('http://localhost:3500')
 const drawerWidth = 240;
 

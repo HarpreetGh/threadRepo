@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react'
+import React, { useState} from 'react'
 import {Modal, Form, Button } from 'react-bootstrap'
 import {useContacts} from '../../context/ContactsProvider'
 import {useConversations} from '../../context/ConversationsProvider'
