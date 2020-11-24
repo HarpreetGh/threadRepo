@@ -7,12 +7,23 @@
 var app = require('../app');
 var debug = require('debug')('myapp:server');
 var http = require('http');
-const app2 = require('express')()
-const http2 = require('http').createServer(app2)
-const io = require('socket.io')(http2);
+const io = require('socket.io')(5000);
 
 
-//For socket.io we will use port 3500
+io.on('connection', socket => {
+  const id = socket.handshake.query.userId
+  socket.join(id)
+  
+  socket.on('send-message', ({recipients, text}) =>{
+    recipients.forEach(recipient =>{
+      const newRecipients = recipients.filter(r => r !== recipient)
+      newRecipients.push(id)
+      socket.broadcast.to(recipient).emit('receive-message', {
+        recipients: newRecipients, sender: id, text
+      })
+    })
+  })
+})
 
 
 /**

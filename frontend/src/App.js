@@ -21,6 +21,9 @@ import SoldListings from "./components/pages/sold-listings.js";
 import OrderHistory from "./components/pages/order-history.js";
 import UserSettings from "./components/pages/user-settings.js";
 import MessagesPage from "./components/pages/messages-page.js";
+import { ContactsProvider } from "./context/ContactsProvider.js";
+import { ConversationsProvider } from "./context/ConversationsProvider"
+import { SocketProvider } from "./context/SocketProvider.js";
 
 export const sections  = [
   { title: "Home", url: "/" },
@@ -84,7 +87,13 @@ export default function App() {
               <Route path="/sold-listings" exact component={SoldListings} />
               <Route path="/order-history" exact component={OrderHistory} />
               <Route path="/user-settings" exact component={UserSettings} />
-              <Route path="/messages-page/:username" exact component={MessagesPage} />
+              <SocketProvider>
+                <ContactsProvider>
+                  <ConversationsProvider>
+                    <Route path="/messages-page/:username" exact component={MessagesPage} />
+                  </ConversationsProvider>
+                </ContactsProvider>
+              </SocketProvider>
             </Switch>
           </div>
         

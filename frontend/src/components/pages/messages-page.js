@@ -19,9 +19,11 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import Sidebar from './Sidebar'
+import OpenConversation from './OpenConversation';
+import { useConversations } from '../../context/ConversationsProvider';
 //import io from 'socket.io-client'
 //import 'bootstrap/dist/css/bootstrap.min.css'
-
+const userId = localStorage.getItem('id')
 //const socket = io.connect('http://localhost:3500')
 const drawerWidth = 240;
 
@@ -146,7 +148,8 @@ export default function MessagePage() {
   const [open, setOpen] = React.useState(false);
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
-  const userId = localStorage.getItem('id')
+  
+  const {selectedConversation} = useConversations()
   
   
    
@@ -270,6 +273,7 @@ export default function MessagePage() {
           {/*This will be where we create our private chat */}
                <div className = 'd-flex' style = {{height:"80vh"}}>
                      <Sidebar id = {userId}/>
+                     {selectedConversation && <OpenConversation/>}
                </div>
             
                
