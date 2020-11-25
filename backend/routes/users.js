@@ -158,7 +158,7 @@ router.get('/', auth, async (req, res) => {
     });
 });
 
-
+/*
 //This is used to update the users profile
 router.route('/update/:id').post((req, res) => {
    User.findById(req.params.id)
@@ -179,7 +179,7 @@ router.route('/update/:id').post((req, res) => {
         .catch(err => res.status(400).json('Error: ' + err)); 
 });
 
-
+*/
  //or use this
     //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
     //input format 
