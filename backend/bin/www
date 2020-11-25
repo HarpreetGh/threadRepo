@@ -7,6 +7,24 @@
 var app = require('../app');
 var debug = require('debug')('myapp:server');
 var http = require('http');
+const io = require('socket.io')(5000);
+
+
+io.on('connection', socket => {
+  const id = socket.handshake.query.userId
+  socket.join(id)
+  
+  socket.on('send-message', ({recipients, text}) =>{
+    recipients.forEach(recipient =>{
+      const newRecipients = recipients.filter(r => r !== recipient)
+      newRecipients.push(id)
+      socket.broadcast.to(recipient).emit('receive-message', {
+        recipients: newRecipients, sender: id, text
+      })
+    })
+  })
+})
+
 
 /**
  * Get port from environment and store in Express.

@@ -82,6 +82,7 @@ router.route('/login').post((req, res) => {
         if (err) return handleError(err);
     
     }).then(function(user) {
+        console.log(user)
         if(!user) {
             
             res.json('Invalid User');
@@ -89,10 +90,12 @@ router.route('/login').post((req, res) => {
         else {
 
             bcrypt.compare(req.body.password, user.password, function (err, result){
+               
                 if(result == true) {
                     
                     //res.send('users');
                     const token = jwt.sign({id: user._id}, process.env.JWT_SECRET);
+                    
                     res.json({
                         token,
                         user: {
@@ -175,8 +178,8 @@ router.route('/update/:id').post((req, res) => {
         })
         .catch(err => res.status(400).json('Error: ' + err)); 
 });
-*/
 
+*/
  //or use this
     //https://mongoosejs.com/docs/api.html#model_Model.findByIdAndUpdate
     //input format 
@@ -195,6 +198,7 @@ router.route('/update/:id').post((req, res) => {
         lastname: req.body.lastname,
         email: req.body.email,
         }
+
         User.updateOne(
             { _id: req.params.id },
             //updates,
@@ -244,6 +248,7 @@ router.route('/updatewishlist/:id').post((req, res) => {
             if (err) {
                 return res.json({ success: false, err });
             }
+
             console.log(user);
             res.end();
         }

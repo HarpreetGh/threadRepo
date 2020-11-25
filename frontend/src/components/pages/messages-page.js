@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { Redirect } from 'react-router-dom';
@@ -6,8 +7,7 @@ import axios from 'axios';
 import {
   Drawer, CssBaseline, AppBar, Toolbar, List, Typography,
   Divider, IconButton, ListItem, ListItemIcon, ListItemText,
-  Link
-} from '@material-ui/core';
+  Link, TextField } from '@material-ui/core';
 import MoneyOffIcon from '@material-ui/icons/MoneyOff';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import HistoryIcon from '@material-ui/icons/History';
@@ -18,8 +18,16 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
-
+import Sidebar from './Sidebar'
+import OpenConversation from './OpenConversation';
+import { useConversations } from '../../context/ConversationsProvider';
+//import io from 'socket.io-client'
+//import 'bootstrap/dist/css/bootstrap.min.css'
+const userId = localStorage.getItem('username')
+//const socket = io.connect('http://localhost:3500')
 const drawerWidth = 240;
+
+
 
 const useStyles = makeStyles((theme) => ({
   tDisplay: {
@@ -83,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+    padding: theme.spacing(0,85),
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -97,6 +105,41 @@ const useStyles = makeStyles((theme) => ({
     }),
     marginLeft: 0,
   },
+    card2: {
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr",
+      margin: "30px",
+      minHeight: "30rem"
+  },
+  form: {
+    maxWidth: "350px",
+    borderRadius: "5px",
+    padding: "20px",
+    boxShadow: "0px 3px 24px -8px rgba(0, 0, 0, 0.75)"
+  },
+  namefield: { 
+    marginBottom: "40px",
+ 
+   },
+  button: {
+    marginTop: "20px",
+    padding: "10px",
+    background: "transparent",
+    borderRadius: "5px"
+  },
+  renderchat: {
+    maxWidth: "5000px",
+    borderRadius: "5px",
+    padding: "20px",
+    boxShadow: "0px 3px 24px -8px rgba(0, 0, 0, 0.75)"
+  },
+  h3: { 
+    color: "#2f72da" 
+  },
+  span: { 
+    color: "black" 
+  }
+
 }));
 
 export default function MessagePage() {
@@ -106,6 +149,12 @@ export default function MessagePage() {
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   
+  const {selectedConversation} = useConversations()
+  
+  
+   
+
+
   const handleDrawerOpen = () => {// function opens the side drawer
     setOpen(true);
   };
@@ -138,7 +187,7 @@ export default function MessagePage() {
           <div className={classes.root}>
             <CssBaseline/>
             <AppBar
-              position="relative"
+             style = {{position :'relative', zIndex: 0}}
               className={clsx(classes.appBar, {[classes.appBarShift]: open,})}
             >
               <Toolbar>
@@ -219,22 +268,18 @@ export default function MessagePage() {
               </List>
               <Divider/>
             </Drawer>
-          </div>
-          <main className={clsx(classes.content, {[classes.contentShift]: open,})}>
-            <div className={classes.drawerHeader}/>
-              <Typography paragraph>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                ut labo re et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
-                facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
-                gravida rutrum quisque non tellus. Convallis convallis tellus id interdum velit laoreet id
-                donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-                adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra nibh cras.
-                Metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo quis
-                imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
-                arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
-                donec massa sapien faucibus et molestie ac.
-              </Typography>
-          </main>
+          </div >
+
+          {/*This will be where we create our private chat */}
+               <div className = 'd-flex' style = {{height:"80vh"}}>
+                     <Sidebar id = {userId}/>
+                     {selectedConversation && <OpenConversation/>}
+               </div>
+            
+               
+               
+           {/*This will be where we create our private chat */}
+           
         </div>
       );
     }
