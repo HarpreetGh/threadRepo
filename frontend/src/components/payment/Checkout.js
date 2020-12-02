@@ -15,7 +15,7 @@ import Typography from '@material-ui/core/Typography';
 //import PaymentForm from './PaymentForm';
 import Review from './Review';
 import Axios from 'axios';
-import PayPal from '../misc/paypal'
+import PayPal from './paypal'
 
 function Copyright() {
   return (

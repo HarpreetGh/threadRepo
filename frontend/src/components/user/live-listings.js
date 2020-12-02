@@ -7,7 +7,7 @@ import { Typography,
   Container, Grid, CardMedia, CardContent, CardActions,
   Card, Button
 } from '@material-ui/core';
-import ProfileBar from "./profile-page";
+import ProfileBar from "../layout/profileBar";
 
 const drawerWidth = 240;
 

@@ -2,30 +2,29 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 //These are files for webpage html rendering at specific URLs
 import HomePage from "./components/pages/home-page.js";
-import AllListings from "./components/pages/all-listings.js";
-import AddListings from "./components/pages/add-listing.js";
+import AddListings from "./components/user/add-listing.js";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
-import Checkout from "./components/pages/Checkout";
+import Checkout from "./components/payment/Checkout";
 
 import Listing from "./components/pages/itemFromDB.js";
-import WishList from "./components/pages/Wishlist";
+import WishList from "./components/user/Wishlist";
 import Sold from "./components/pages/Sold";
 import Axios from "axios";
 import Header from "./components/layout/header.js";
 
 import UserContext from "./context/UserContext.js";
-import EditPage from "./components/pages/edit-page.js";
-import LiveListings from "./components/pages/live-listings.js";
-import SoldListings from "./components/pages/sold-listings.js";
-import OrderHistory from "./components/pages/order-history.js";
-import UserSettings from "./components/pages/user-settings.js";
-import MessagesPage from "./components/pages/messages-page.js";
+import EditPage from "./components/user/edit-page.js";
+import LiveListings from "./components/user/live-listings.js";
+import SoldListings from "./components/user/sold-listings.js";
+import OrderHistory from "./components/user/order-history.js";
+import UserSettings from "./components/user/user-settings.js";
+import MessagesPage from "./components/private-messages/messages-page";
 import { ContactsProvider } from "./context/ContactsProvider.js";
 import { ConversationsProvider } from "./context/ConversationsProvider"
 import { SocketProvider } from "./context/SocketProvider.js";
 
-export const sections  = [
+export const sections = [
   { title: "Home", url: "/" },
   { title: "Sold Listings", url: "/sold" },
   { title: "Create Listing", url: "/listings/create" },
@@ -51,12 +50,12 @@ export default function App() {
         null,
         { headers: { "x-auth-token": token } }
       );
-     
+
       if (tokenRes.data) {
         const userRes = await Axios.get("http://localhost:4000/users/", {
           headers: { "x-auth-token": token },
         });
-       
+
         setUserData({
           token,
           user: userRes.data,
@@ -76,7 +75,6 @@ export default function App() {
               <Route path="/" exact component={HomePage} />
               <Route path="/wishlist" exact component={WishList} />
               <Route path="/sold" exact component={Sold} />
-              <Route path="/listings" exact component={AllListings} />
               <Route path="/listings/create" exact component={AddListings} />
               <Route path="/listings/:id" exact component={Listing} />
               <Route path="/Checkout/:id" exact component={Checkout} />
@@ -96,7 +94,7 @@ export default function App() {
               </SocketProvider>
             </Switch>
           </div>
-        
+
         </UserContext.Provider>
       </BrowserRouter>
     </>
