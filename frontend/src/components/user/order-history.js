@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import axios from 'axios';
-import Album from "../layout/Show-Listings"
+import Album from "../layout/show-listings"
 import ProfileBar from "../layout/profileBar";
 
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import {Typography} from '@material-ui/core';
-import Album from "../layout/Show-Listings"
+import Album from "../layout/show-listings"
 import ProfileBar from "../layout/profileBar";
 
 const useStyles = makeStyles((theme) => ({
