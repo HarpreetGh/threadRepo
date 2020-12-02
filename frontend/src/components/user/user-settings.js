@@ -9,7 +9,7 @@ import { Typography, IconButton,
 import {
   Visibility, VisibilityOff
 } from '@material-ui/icons';
-import ProfileBar from "./profile-page";
+import ProfileBar from "../layout/profileBar";
 
 const useStyles = makeStyles((theme) => ({
   title: {

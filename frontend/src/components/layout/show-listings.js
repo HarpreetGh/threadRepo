@@ -105,6 +105,7 @@ const sortOptions = [
   "Price: High to Low", "Price: Low to High",
 ]
 
+
 export default function Album(props) {
   const classes = useStyles();
   const [error, setError] = useState(null);
@@ -130,7 +131,7 @@ export default function Album(props) {
       });
   }, [])
 
-  const handleToggle = (id, value) => {
+  const applyFilter = (id, value) => {
     console.log(id, value);
     var newFilter = filter;
     console.log(newFilter[id])
@@ -152,14 +153,14 @@ export default function Album(props) {
     newFilter.sizeF = tempF; newFilter.sizeG = tempG;
   }
   
-  const filterList = (currentFilter) => (
+  const displayFilter = (currentFilter) => (
     <Col>
     <FormControl className={classes.formControl}>
       <InputLabel>{currentFilter.name}</InputLabel>
       <Select
         multiple
         value={filter[currentFilter.id]}
-        onChange={(e) => handleToggle(currentFilter.id, e.target.value)}
+        onChange={(e) => applyFilter(currentFilter.id, e.target.value)}
         input={<Input />}
         renderValue={(selected) => (
           <div className={classes.chips}>
@@ -192,7 +193,7 @@ export default function Album(props) {
         //step={15}
         max={currentFilter.list[currentFilter.list[currentFilter.list.length-1]]}
         value={filter[currentFilter.id]}
-        onChange={(e) => handleToggle(currentFilter.id, e.target.value)}
+        onChange={(e) => applyFilter(currentFilter.id, e.target.value)}
         valueLabelDisplay="auto"
         aria-labelledby="range-slider"
       />
@@ -243,7 +244,7 @@ export default function Album(props) {
     )
   };
 
-  const handleChange = (value) => {
+  const applySort = (value) => {
     var ascending = 0;
     var i = 0;
     for (i = 0; i < sortOptions.length; i++) {
@@ -282,12 +283,12 @@ export default function Album(props) {
     setReLoad(!reLoad);
   }
 
-  const sortList = () => (
+  const displaySort = () => (
     <FormControl className={classes.formControl}>
       <InputLabel>Sort by:</InputLabel>
       <Select
         value={sort}
-        onChange={(e) => handleChange(e.target.value)}
+        onChange={(e) => applySort(e.target.value)}
         input={<Input />}
       >
         {sortOptions.map((currentOptions) => (
@@ -386,28 +387,28 @@ export default function Album(props) {
           <Toolbar />
           {showFilters?(
             <div>
-              {filterList(Filters.category) /*Category*/}
+              {displayFilter(Filters.category) /*Category*/}
             
               {(filter.category.includes("Upper Thread") || filter.category.includes("Lower Thread")) ? (
-                filterList(Filters.sizeG)
+                displayFilter(Filters.sizeG)
               ) : (filter.sizeG.length === 0 ? ("") :
-                (handleToggle("sizeG", []))
+                (applyFilter("sizeG", []))
                 )} 
              
       
               {(filter.category.includes("Footwear")) ? (
-                filterList(Filters.sizeF)
+                displayFilter(Filters.sizeF)
                 ) : (filter.sizeF.length === 0? ("") : 
-              (handleToggle("sizeF", []))
+              (applyFilter("sizeF", []))
               )}
           
-              {filterList(Filters.condition)}
-              {filterList(Filters.color)}
+              {displayFilter(Filters.condition)}
+              {displayFilter(Filters.color)}
             </div>
             ):("")
           }
           <Divider/>
-          <div>{sortList()}</div>
+          <div>{displaySort()}</div>
           </Drawer>
           {reLoad ? (displayListings()) : (displayListings())}
           

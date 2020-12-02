@@ -9,7 +9,7 @@ import { Redirect } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
 import axios from 'axios';
 import { useParams } from "react-router-dom";
-import ProfileBar from "./profile-page";
+import ProfileBar from "../layout/profileBar";
 
 const useStyles = makeStyles((theme) => ({
   title: {

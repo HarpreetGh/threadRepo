@@ -1,7 +1,7 @@
 import React from "react"; 
 import { Redirect } from 'react-router-dom';
-import ProfileBar from "./profile-page";
-import Album from "./Show-Listings"
+import ProfileBar from "../layout/profileBar";
+import Album from "../layout/Show-Listings"
 
 export default function HomePage() {
   if (localStorage.getItem("auth-token") !== ""){

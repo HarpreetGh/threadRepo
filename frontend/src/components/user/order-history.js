@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import axios from 'axios';
-import Album from "./Show-Listings"
-import ProfileBar from "./profile-page";
+import Album from "../layout/Show-Listings"
+import ProfileBar from "../layout/profileBar";
 
 
 const useStyles = makeStyles((theme) => ({
