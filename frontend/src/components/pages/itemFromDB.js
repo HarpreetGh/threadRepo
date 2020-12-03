@@ -15,6 +15,9 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import CommentIcon from '@material-ui/icons/Comment';
+import SendIcon from '@material-ui/icons/Send';
+
+import { useContacts } from '../../context/ContactsProvider'
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -87,7 +90,8 @@ export default function Listing() {
   const [reload, setReload] = useState(false);
   const [isLoaded2, setIsLoaded2] = useState(false);
   const { userData, setUserData } = useContext(UserContext);
-  let { id } = useParams(); //url 
+  let { id } = useParams(); //url
+  //const { createContact } = useContacts() 
   const classes = useStyles();
 
   const getListing = () => {
@@ -255,6 +259,11 @@ export default function Listing() {
     }
   }
 
+  const click = () => {
+    console.log("click")
+    //createContact(listing.username, listing.username)
+  }
+
   if (!isLoaded1) {
     return <div>Loading...</div>;
   }
@@ -278,6 +287,14 @@ export default function Listing() {
             <Col className={classes.c2Layout}>
               <div style={{ padding: 5 }}>
                 Sold By: {listing.username}
+                <Button
+                  color="primary"
+                  //endIcon={<Icon>send</Icon>}
+                  size="small"
+                  onClick={click}
+                > 
+                  <SendIcon/>
+                </Button>
               </div>
               <hr />
               <div style={{ padding: 10 }}>

@@ -68,6 +68,7 @@ export default function Checkout() {
   const [activeStep, setActiveStep] = useState(0);
   const [listing, setListing] = useState({});
   const [userId, setUserId] = useState({});
+  const [sellerEmail, setSellerEmail] = useState("");
   
 
 
@@ -79,8 +80,17 @@ export default function Checkout() {
       .then(response => {
         setListing(response.data)
         setUserId( localStorage.getItem("id"))
+        console.log(response.data)
+        Axios.post('http://localhost:4000/users/email', 
+        { username: response.data.username })
+          .then(response2 => {
+            setSellerEmail(response2.data)
+            console.log(response2.data)
+          })
       })
     console.log(listing)
+
+    
   }, [])
 
 
@@ -90,7 +100,7 @@ export default function Checkout() {
   
   };
 
-  const transactionSuccess = () => {
+  const transactionSuccess = (address) => {
     
     let userPurchase = { 
       listingId: id,  listingName: listing.name, listingPrice: listing.price, buyerId: userId    
@@ -99,6 +109,9 @@ export default function Checkout() {
     Axios.post('http://localhost:4000/users/buySuccess', userPurchase)
     Axios.post('http://localhost:4000/listings/update/' + id, 
     { sold: true })
+    Axios.post('http://localhost:4000/email/payment', {name: listing.name,
+      username: localStorage.getItem("username"), email: sellerEmail,
+      address: address })
 
     handleNext()
       

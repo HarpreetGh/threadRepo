@@ -7,7 +7,7 @@ export default class PayPal extends React.Component {
             // Congratulation, it came here means everything's fine!
                     console.log("The payment succeeded!", payment);
                     console.log(payment.address);
-                    this.props.onSuccess(payment);
+                    this.props.onSuccess(payment.address);
                     // You can bind the "payment" object's value to your state or props or whatever here, please see below for sample returned data
         }
  

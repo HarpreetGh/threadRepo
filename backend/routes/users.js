@@ -296,4 +296,17 @@ router.route('/buySuccess').post((req,res) => {
         });
 });
 
+router.route("/email").post((req, res) => {
+    console.log(req.body);
+    User.findOne(req.body, function (err, userEmail) {
+        if (err) {
+            console.log("bad");
+            res.json(err);
+        }
+    }).then(function (userEmail) {
+        console.log(userEmail);
+        res.json(userEmail.email);
+    });
+});
+
 module.exports = router;

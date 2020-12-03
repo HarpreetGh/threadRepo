@@ -15,6 +15,7 @@ connection.once('open', () => { console.log("MongoDb database connected!"); })
 
 var listingsRouter = require('./routes/listings');
 var userRouter = require('./routes/users');
+var emailRouter = require('./routes/email');
 
 var app = express();
 
@@ -26,6 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/listings', listingsRouter);
 app.use('/users', userRouter);
+app.use('/email', emailRouter);
 //app.use('/login', login);
 
 // catch 404 and forward to error handler
