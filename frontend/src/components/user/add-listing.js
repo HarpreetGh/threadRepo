@@ -7,7 +7,8 @@ import MyDropzone from "../misc/file-upload.js";
 import { 
 Button, CssBaseline, TextField,FormControl,
 Grid, Typography, Container, Select, MenuItem,
-OutlinedInput, InputAdornment, InputLabel}
+OutlinedInput, InputAdornment, InputLabel,
+CircularProgress, Backdrop}
 from "@material-ui/core";
 
 
@@ -21,6 +22,10 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     minWidth: 150,
   },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
 }));
 
 
@@ -33,6 +38,7 @@ export default function Create() {
   const [condition, setCondition] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const { userData } = useContext(UserContext);
   const classes = useStyles();
@@ -40,6 +46,7 @@ export default function Create() {
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       console.log(image);
       const data = new FormData()
       data.append("file", image)
@@ -68,11 +75,19 @@ export default function Create() {
 
       console.log(newListing);
       Axios.post("http://localhost:4000/listings/add", newListing)
-        .then(response => { window.location = response.data; });
+        .then(response => { window.location = response.data; })
+        .catch (function (error) {
+          if (error.response) {
+            setLoading(false)
+            alert("unable to create");
+            console.log(error);
+          }
+        });
     } 
     catch (err) {
+      setLoading(false);
       console.log("bad");
-      alert("Please wait");
+      alert("Please Check all Fields, and Image has been entered");
     }
   };
 
@@ -234,6 +249,9 @@ export default function Create() {
               Create
             </Button>
           </form>
+          <Backdrop className={classes.backdrop} open={loading}>
+            <CircularProgress color={"inherit"}/>
+          </Backdrop>
         </div>
       </Container>
     );

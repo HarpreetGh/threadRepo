@@ -42,7 +42,10 @@ export default function NewConversationModal ({closeModal}) {
                     />
                 </Form.Group>
             ))}
-                <Button type ='submit'>Create</Button>
+                {contacts.length > 0? (
+                    <Button type ='submit'>Create</Button>
+                    ):(
+                    "Please add a contact")}
             </Form>
         </Modal.Body>
         </>
