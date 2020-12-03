@@ -91,6 +91,7 @@ export default function ProfileBar() {
           <div className={classes.root}>
             <CssBaseline/>
             <AppBar
+            style = {{zIndex: 0}}
             position="relative"
             className={clsx(classes.appBar, {[classes.appBarShift]: open,})}
             color="default"
