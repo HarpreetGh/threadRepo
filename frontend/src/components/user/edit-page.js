@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   imgPreview: {
       textAlign: "center",
       margin: "5px 15px",
-      height: "300px",
+      height: "500px",
       width: "500px",
       borderLeft: "1px solid gray",
       borderRight: "1px solid gray",

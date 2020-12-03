@@ -201,7 +201,8 @@ export default function Album(props) {
     </Col>
   );
 */
-  const displayListings = () => {
+const displayListings = () => {
+  if(listings.length > 0){
     return (
       <Container className={classes.cardGrid} maxWidth="md">
         <Grid container spacing={4}>
@@ -242,7 +243,13 @@ export default function Album(props) {
         </Grid>
       </Container>
     )
-  };
+  }
+  else{
+    return(
+      <h1>No Results</h1>
+    )
+  }
+};
 
   const applySort = (value) => {
     var ascending = 0;

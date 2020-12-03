@@ -47,8 +47,11 @@ export default function UserSettings() {
       };
       axios.post("http://localhost:4000/users/update/" + localStorage.getItem("id"), updatedUser)
         .then(response => {
+          localStorage.setItem("email", email);
+          localStorage.setItem("firstname", firstname);
+          localStorage.setItem("lastname", lastname); 
           // user needs to become re-authenticated based on updated info, should be automatically but for now logout then back in
-          window.location = "http://localhost:3000/profile-page";// line above should redirect user to their profile homepage
+          window.location = "http://localhost:3000/live-listings";// line above should redirect user to their profile homepage
         });
     }
     catch(err){
@@ -160,7 +163,7 @@ export default function UserSettings() {
                   variant="contained"
                   color="secondary"
                   value="Cancel"
-                  onClick={() => window.location = "http://localhost:3000/profile-page"}
+                  onClick={() => window.location = "http://localhost:3000/live-listings"}
                   >
                     Cancel
                   </Button>

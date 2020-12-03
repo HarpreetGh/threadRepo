@@ -224,8 +224,6 @@ export default function Listing() {
             <Button href={"/edit-page/" + id} size="medium" color="primary" variant="outlined">
               Edit
           </Button>
-            {" "}
-            {getWishList()}
           </div>
         )
       }
@@ -278,9 +276,6 @@ export default function Listing() {
                 items={[{ original: listing.image, thumbnail: listing.image }]} />
             </Col>
             <Col className={classes.c2Layout}>
-              <div style={{ padding: 5 }}>
-                Rating: {listing.likes} Likes
-              </div>
               <div style={{ padding: 5 }}>
                 Sold By: {listing.username}
               </div>

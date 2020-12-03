@@ -160,12 +160,7 @@ export default function Register() {
                 />
               </FormControl>
             </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox value="allowExtraemails" color="primary" />}
-                label="I am not a robot"
-              />
-            </Grid>
+
           </Grid>
           <Button
             onSubmit={onSubmit}
